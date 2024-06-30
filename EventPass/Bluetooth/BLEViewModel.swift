@@ -10,38 +10,30 @@ import CoreBluetooth
 
 
 class BLEViewModel: NSObject, ObservableObject {
-    private var centralManager: CBCentralManager
+    private var centralManager: CBCentralManager!
+    private var peripheralManager: CBPeripheralManager!
     // this stores detected devices
-    private var peripherals: CBPeripheral
+    private var peripherals: [CBPeripheral] = []
     
     // conversion of nearby peripherals to accessible profiles
     @Published var nearbyUsers: [Profile] = []
     
     
-    init() {
+    override init() {
         super.init()
+        self.centralManager = CBCentralManager(delegate: self, queue: .main)
+        self.peripheralManager = CBPeripheralManager(delegate: self, queue: .main)
+  
     }
 }
 
 
-class BLEViewModel: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDelegate {
+extension BLEViewModel: CBCentralManagerDelegate {
+    // recieving transmissions
     
-    var centralManager: CBCentralManager!
-    var peripheralManager: CBPeripheralManager!
-    var isBluetoothOn: Bool = false
-    
-    override init() {
-        super.init()
-        centralManager = CBCentralManager(delegate: self, queue: nil)
-        peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
-    }
-    
-    // Recieving transmissions
-        
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
         case .poweredOn:
-            isBluetoothOn = true;
             startScanning()
         default:
             // add a "bluetooth off" flag
@@ -52,25 +44,26 @@ class BLEViewModel: NSObject, CBCentralManagerDelegate, CBPeripheralManagerDeleg
     func startScanning() {
         centralManager.scanForPeripherals(withServices: nil, options: nil)
     }
+}
     
-    // Advertising transmissions
+extension BLEViewModel: CBPeripheralManagerDelegate {
+    // advertising transmissions
+    
     func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         switch peripheral.state {
         case .poweredOn:
-            isBluetoothOn = true;
             startAdvertising()
         default:
             // add a "bluetooth off" flag
-            isBluetoothOn = false;
             break
         }
     }
     
     func startAdvertising() {
-        // Start advertising
+
         let advertisementData = [CBAdvertisementDataLocalNameKey: "MyDevice"]
         peripheralManager.startAdvertising(advertisementData)
     }
-    
-    // Other delegate methods and BLE functionalities
 }
+
+
