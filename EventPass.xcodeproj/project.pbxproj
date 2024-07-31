@@ -7,12 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5FBEA2EA2C19CD8300FA185D /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBEA2E92C19CD8300FA185D /* WelcomeView.swift */; };
+		5F2DC3742C56B3C40015EBE7 /* Freehand.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F2DC3732C56B2A20015EBE7 /* Freehand.ttf */; };
+		5F2DC3752C56B3C40015EBE7 /* Simple.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F2DC3722C56B29F0015EBE7 /* Simple.ttf */; };
+		5F2DC3792C57E7BE0015EBE7 /* EventCodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2DC3782C57E7BD0015EBE7 /* EventCodeModel.swift */; };
+		5F2DC37B2C5928460015EBE7 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2DC37A2C5928460015EBE7 /* SignUpView.swift */; };
 		5FBEA2EC2C287D8700FA185D /* BLEViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBEA2EB2C287D8700FA185D /* BLEViewModel.swift */; };
 		5FBEA2EE2C28810A00FA185D /* BLEModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBEA2ED2C28810A00FA185D /* BLEModel.swift */; };
 		5FBEA2F12C28857F00FA185D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBEA2F02C28857F00FA185D /* Constants.swift */; };
+		5FBEA2F62C551F2E00FA185D /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBEA2F52C551F2E00FA185D /* SplashScreenView.swift */; };
 		5FCB9D212C0DE82A001172BD /* EventPassApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCB9D202C0DE82A001172BD /* EventPassApp.swift */; };
-		5FCB9D232C0DE82A001172BD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCB9D222C0DE82A001172BD /* ContentView.swift */; };
+		5FCB9D232C0DE82A001172BD /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCB9D222C0DE82A001172BD /* WelcomeView.swift */; };
 		5FCB9D252C0DE82A001172BD /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCB9D242C0DE82A001172BD /* Item.swift */; };
 		5FCB9D272C0DE82C001172BD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FCB9D262C0DE82C001172BD /* Assets.xcassets */; };
 		5FCB9D2A2C0DE82C001172BD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FCB9D292C0DE82C001172BD /* Preview Assets.xcassets */; };
@@ -47,13 +51,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		5FBEA2E92C19CD8300FA185D /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		5F2DC36F2C56B0560015EBE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5F2DC3722C56B29F0015EBE7 /* Simple.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Simple.ttf; sourceTree = "<group>"; };
+		5F2DC3732C56B2A20015EBE7 /* Freehand.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Freehand.ttf; sourceTree = "<group>"; };
+		5F2DC3782C57E7BD0015EBE7 /* EventCodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCodeModel.swift; sourceTree = "<group>"; };
+		5F2DC37A2C5928460015EBE7 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		5FBEA2EB2C287D8700FA185D /* BLEViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEViewModel.swift; sourceTree = "<group>"; };
 		5FBEA2ED2C28810A00FA185D /* BLEModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEModel.swift; sourceTree = "<group>"; };
 		5FBEA2F02C28857F00FA185D /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		5FBEA2F52C551F2E00FA185D /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		5FCB9D1D2C0DE82A001172BD /* EventPass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EventPass.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FCB9D202C0DE82A001172BD /* EventPassApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPassApp.swift; sourceTree = "<group>"; };
-		5FCB9D222C0DE82A001172BD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		5FCB9D222C0DE82A001172BD /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		5FCB9D242C0DE82A001172BD /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		5FCB9D262C0DE82C001172BD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5FCB9D292C0DE82C001172BD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -95,10 +104,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5F2DC3712C56B2990015EBE7 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				5F2DC3732C56B2A20015EBE7 /* Freehand.ttf */,
+				5F2DC3722C56B29F0015EBE7 /* Simple.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		5FBEA2E82C19CD5B00FA185D /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
-				5FBEA2E92C19CD8300FA185D /* WelcomeView.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -112,6 +129,13 @@
 			path = Bluetooth;
 			sourceTree = "<group>";
 		};
+		5FBEA2F22C52450400FA185D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		5FCB9D142C0DE82A001172BD = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +144,7 @@
 				5FCB9D322C0DE82C001172BD /* EventPassTests */,
 				5FCB9D3C2C0DE82C001172BD /* EventPassUITests */,
 				5FCB9D1E2C0DE82A001172BD /* Products */,
+				5FBEA2F22C52450400FA185D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -136,9 +161,14 @@
 		5FCB9D1F2C0DE82A001172BD /* EventPass */ = {
 			isa = PBXGroup;
 			children = (
+				5F2DC3712C56B2990015EBE7 /* Fonts */,
+				5F2DC36F2C56B0560015EBE7 /* Info.plist */,
 				5FCB9D202C0DE82A001172BD /* EventPassApp.swift */,
 				5FBEA2E82C19CD5B00FA185D /* Authentication */,
-				5FCB9D222C0DE82A001172BD /* ContentView.swift */,
+				5FCB9D222C0DE82A001172BD /* WelcomeView.swift */,
+				5F2DC37A2C5928460015EBE7 /* SignUpView.swift */,
+				5F2DC3782C57E7BD0015EBE7 /* EventCodeModel.swift */,
+				5FBEA2F52C551F2E00FA185D /* SplashScreenView.swift */,
 				5FBEA2EF2C28856B00FA185D /* Bluetooth */,
 				5FCB9D242C0DE82A001172BD /* Item.swift */,
 				5FCB9D262C0DE82C001172BD /* Assets.xcassets */,
@@ -287,6 +317,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F2DC3742C56B3C40015EBE7 /* Freehand.ttf in Resources */,
+				5F2DC3752C56B3C40015EBE7 /* Simple.ttf in Resources */,
 				5FCB9D2A2C0DE82C001172BD /* Preview Assets.xcassets in Resources */,
 				5FCB9D272C0DE82C001172BD /* Assets.xcassets in Resources */,
 				5FCB9D4D2C0DE853001172BD /* GoogleService-Info.plist in Resources */,
@@ -316,13 +348,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5FCB9D232C0DE82A001172BD /* ContentView.swift in Sources */,
+				5FCB9D232C0DE82A001172BD /* WelcomeView.swift in Sources */,
 				5FCB9D252C0DE82A001172BD /* Item.swift in Sources */,
 				5FBEA2EC2C287D8700FA185D /* BLEViewModel.swift in Sources */,
 				5FCB9D212C0DE82A001172BD /* EventPassApp.swift in Sources */,
 				5FBEA2F12C28857F00FA185D /* Constants.swift in Sources */,
-				5FBEA2EA2C19CD8300FA185D /* WelcomeView.swift in Sources */,
+				5F2DC3792C57E7BE0015EBE7 /* EventCodeModel.swift in Sources */,
 				5FBEA2EE2C28810A00FA185D /* BLEModel.swift in Sources */,
+				5F2DC37B2C5928460015EBE7 /* SignUpView.swift in Sources */,
+				5FBEA2F62C551F2E00FA185D /* SplashScreenView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -486,8 +520,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"EventPass/Preview Content\"";
+				DEVELOPMENT_TEAM = 68QCNFDQ4Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EventPass/Info.plist;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Please allow BlueTooth access to send and recieve transmissions from members within your event";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -498,7 +535,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = name.hatanuk.EventPass;
+				PRODUCT_BUNDLE_IDENTIFIER = name.hatanuk.EventPasss;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -514,8 +551,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"EventPass/Preview Content\"";
+				DEVELOPMENT_TEAM = 68QCNFDQ4Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EventPass/Info.plist;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Please allow BlueTooth access to send and recieve transmissions from members within your event";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

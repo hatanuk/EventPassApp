@@ -13,7 +13,7 @@ class BLEViewModel: NSObject, ObservableObject {
     private var centralManager: CBCentralManager!
     private var peripheralManager: CBPeripheralManager!
     // this stores detected devices
-    private var peripherals: [CBPeripheral] = []
+    var peripherals: [CBPeripheral] = []
     
     // conversion of nearby peripherals to accessible profiles
     @Published var nearbyUsers: [Profile] = []
@@ -23,13 +23,14 @@ class BLEViewModel: NSObject, ObservableObject {
         super.init()
         self.centralManager = CBCentralManager(delegate: self, queue: .main)
         self.peripheralManager = CBPeripheralManager(delegate: self, queue: .main)
-  
+        
     }
+    
 }
 
 
 extension BLEViewModel: CBCentralManagerDelegate {
-    // recieving transmissions
+    // RECIEVING TRANSMISSIONS
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
@@ -44,7 +45,14 @@ extension BLEViewModel: CBCentralManagerDelegate {
     func startScanning() {
         centralManager.scanForPeripherals(withServices: nil, options: nil)
     }
+    
+    // the method which is called whenever a new peripheral is discovered
+    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        peripherals.append(peripheral)
+    }
 }
+
+
     
 extension BLEViewModel: CBPeripheralManagerDelegate {
     // advertising transmissions
