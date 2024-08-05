@@ -111,7 +111,7 @@ struct WelcomeView: View {
         TextField("", text: $eventCode)
             .multilineTextAlignment(.center)
             .padding(.horizontal)
-            .padding(.vertical, 8)
+            .padding(.vertical, 10)
             .scaleEffect(1.7)
             .overlay(
                 Rectangle()

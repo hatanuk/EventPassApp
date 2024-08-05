@@ -30,8 +30,8 @@ struct SignUpView: View {
                     InputElement("Last Name", binding: $lastName)
                 }
                 InputElement("Email", binding: $email)
-                InputElement("Password", binding: $password)
-                InputElement("Re-enter Password", binding: $passwordRepeat)
+                InputElement("Password", binding: $password, secure: true)
+                InputElement("Re-enter Password", binding: $passwordRepeat, secure: true)
                 
                 TermsAcceptanceView
                 Spacer()
@@ -39,6 +39,7 @@ struct SignUpView: View {
                     .padding(.vertical, 40)
                 
             }
+           
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -127,32 +128,28 @@ struct SignUpView: View {
         }
     }
     
-    
-    func InputElement(_ label: String, binding: Binding<String>, maxChar: Int = 20) -> some View {
-        VStack {
-            TextField(label, text: binding)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-                .padding(.vertical, 8)
-                .scaleEffect(1.2)
-                .overlay(
-                    Rectangle()
-                        .frame(height: 2)
-                        .foregroundColor(.blue),
-                    alignment: .bottom
-                )
-                .onChange(of: binding.wrappedValue) { oldValue, newValue in
-                    if newValue.count > maxChar {
-                        binding.wrappedValue = oldValue
-                    }
-                    
+    func InputElement(_ label: String, binding: Binding<String>, maxChar: Int = 20, secure: Bool = false) -> some View {
+        let field = secure ? AnyView(SecureField(label, text: binding)) : AnyView(TextField(label, text: binding))
+        
+        return field
+            .multilineTextAlignment(.center)
+            .padding(.horizontal)
+            .padding(.vertical, 10)
+            .scaleEffect(1.2)
+            .overlay(
+                Rectangle()
+                    .frame(height: 2)
+                    .foregroundColor(.blue),
+                alignment: .bottom
+            )
+            .onChange(of: binding.wrappedValue) { oldValue, newValue in
+                if newValue.count > maxChar {
+                    binding.wrappedValue = oldValue
                 }
-         
-                    
-            
             }
             .padding(.horizontal, 30)
             .padding(.bottom, 50)
+
         }
 }
 
