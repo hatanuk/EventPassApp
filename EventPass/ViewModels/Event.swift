@@ -15,7 +15,7 @@ import SwiftData
 
 @Model
 class Event {
-    @PrimaryKey let code: String
+    let code: String
     
     
     init?() {

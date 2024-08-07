@@ -29,21 +29,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct EventPassApp: App {
     
-    // SwiftUI Boilerplate
-    var sharedModelContainer: ModelContainer = {
-        // Schema is created with a generic Item - modify this later
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
-    
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
 
@@ -51,6 +36,6 @@ struct EventPassApp: App {
         WindowGroup {
             SplashScreenView()
         }
-        .modelContainer(sharedModelContainer)
+       
     }
 }

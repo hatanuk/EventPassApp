@@ -8,6 +8,6 @@
 import Foundation
 
 struct Constants {
-    static let defaultProfileImageURL = URL(string: "https://avatars.githubusercontent.com/u/583231?v=4")!
+    static let defaultProfileImageURL = "https://avatars.githubusercontent.com/u/583231?v=4"
     
 }

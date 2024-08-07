@@ -6,22 +6,28 @@
 //
 
 import Foundation
+import SwiftData
 
 
-struct CardProfile: Identifiable {
-    let id: UUID
-    let firstName: String
-    let lastName: String
-    let workplace: String
-    let profilePictureURL: URL?
+class CardProfile {
     
-    init(id: UUID, firstName: String, lastName: String, workplace: String, profilePictureURL: URL? = nil) {
-         self.id = id  // This could be a unique identifier like a UUID or a database ID
-         self.firstName = firstName
-         self.lastName = lastName
-         self.workplace = workplace
-         self.profilePictureURL = profilePictureURL ?? Constants.defaultProfileImageURL
+    let id: String
+    var displayName: String?
+    var title: String?
+    var workplace: String?
+    var email: String?
+    var phone: String?
+    var profilePictureURL: String?
     
-     }
+    init(id: String, displayName: String? = nil, title: String? = nil, workplace: String? = nil, email: String? = nil, phone: String? = nil, profilePictureURL: String? = nil) {
+        self.id = id
+        self.displayName = displayName
+        self.title = title
+        self.workplace = workplace
+        self.email = email
+        self.phone = phone
+        self.profilePictureURL = profilePictureURL
+    }
+
     
 }

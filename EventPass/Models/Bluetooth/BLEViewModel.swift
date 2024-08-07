@@ -16,7 +16,7 @@ class BLEViewModel: NSObject, ObservableObject {
     var peripherals: [CBPeripheral] = []
     
     // conversion of nearby peripherals to accessible profiles
-    @Published var nearbyUsers: [Profile] = []
+    @Published var nearbyUsers: [UserProfile] = []
     
     
     override init() {
