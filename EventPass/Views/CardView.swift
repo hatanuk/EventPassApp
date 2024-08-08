@@ -137,19 +137,6 @@ struct CardView: View {
         }
     }
 
-struct BusinessCardView_Previews: PreviewProvider {
-    static var previews: some View {
-        BusinessCardView(profile: CardProfile(
-            id: "1",
-            displayName: "HI There",
-            title: "Software Engineer",
-            workplace: "Tech Company",
-            email: "john.doe@example.com",
-            phone: "+1234567890",
-            profilePictureURL: Constants.defaultProfileImageURL
-        ))
-     
-        .previewLayout(.sizeThatFits)
-    }
+#Preview {
+    CardView(profile: Constants.testProfile)
 }
-

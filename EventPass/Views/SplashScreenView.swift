@@ -6,14 +6,15 @@
 //
 
 import SwiftUI
-import Network
 import Firebase
 
 struct SplashScreenView: View {
-    @State private var isConnected = false
-    @State private var isAuthenticated = false
-    @State private var isActive = true
     
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @StateObject var networkViewModel: NetworkViewModel = NetworkViewModel()
+
+    @State private var isShown = true
+
     // visual animation related variables
     @State private var opacity = 0.5
     @State private var size = 0.8
@@ -22,7 +23,7 @@ struct SplashScreenView: View {
     private let animationTime = 1.2
 
     var body: some View {
-        if !isActive {
+        if !isShown {
             WelcomeView()
         } else {
             VStack {
@@ -40,22 +41,24 @@ struct SplashScreenView: View {
                     self.opacity = 1.0
                     self.size = 1.0
                 }
+                
+                // DispatchQueue is here to purposefully delay the loading sequence
                 DispatchQueue.main.asyncAfter(deadline: .now() + minimumWait) {
-                    checkInternetConnection()
+                    networkViewModel.checkInternetConnection()
                 }
                 
                 
             }
-            .onChange(of: isConnected) { _, newValue in
-                if newValue {
-                    checkAuthenticationState()
+            .onChange(of: networkViewModel.connectionState) { _, newValue in
+                if newValue == .connected {
+                    authViewModel.checkAuthenticationState()
                 }
             }
             
-            .onChange(of: isAuthenticated) {_, newValue in
-                if newValue {
+            .onChange(of: authViewModel.authenticationState) {_, newValue in
+                if newValue == .authenticated {
                     withAnimation(.easeIn(duration: animationTime)){
-                        isActive = false
+                        isShown = false
                     }
                 }
             }
@@ -64,10 +67,10 @@ struct SplashScreenView: View {
     
     var TextBlurb: some View {
         
-        if !isConnected {
+        if networkViewModel.connectionState == .connecting {
             Text("Connecting...")
         }
-        else if !isAuthenticated {
+        else if authViewModel.authenticationState == .authenticating {
             Text("Authenticating....")
         } else {
             Text("Success!")
@@ -75,39 +78,6 @@ struct SplashScreenView: View {
         
     }
 
-    func checkInternetConnection() {
-        let monitor = NWPathMonitor()
-        let queue = DispatchQueue(label: "InternetConnectionMonitor")
-        monitor.pathUpdateHandler = { path in
-            DispatchQueue.main.async {
-                if path.status == .satisfied {
-                    isConnected = true
-                } else {
-                    isConnected = false
-                }
-            }
-        }
-        monitor.start(queue: queue)
-    }
-
-    func checkAuthenticationState() {
-        isAuthenticated = true
-        if Auth.auth().currentUser != nil {
-            isAuthenticated = true
-        } else {
-            loginAnonymously()
-        }
-    }
-
-    func loginAnonymously() {
-        Auth.auth().signInAnonymously() { authResult, error in
-            if let error = error {
-                print("Error logging in anonymously: \(error)")
-                return
-            }
-            isAuthenticated = true
-        }
-    }
 }
 
 
@@ -115,4 +85,5 @@ struct SplashScreenView: View {
 
 #Preview {
     SplashScreenView()
+        .environmentObject(AuthViewModel())
 }

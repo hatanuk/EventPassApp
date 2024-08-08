@@ -10,14 +10,16 @@
 		5F2DC3742C56B3C40015EBE7 /* Freehand.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F2DC3732C56B2A20015EBE7 /* Freehand.ttf */; };
 		5F2DC3752C56B3C40015EBE7 /* Simple.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F2DC3722C56B29F0015EBE7 /* Simple.ttf */; };
 		5F2DC37B2C5928460015EBE7 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2DC37A2C5928460015EBE7 /* SignUpView.swift */; };
-		5F687DD82C5D49710010CDF6 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DD72C5D49710010CDF6 /* CardView.swift */; };
 		5F687DDA2C5D4EFF0010CDF6 /* RegularHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DD92C5D4EFF0010CDF6 /* RegularHubView.swift */; };
 		5F687DDD2C5D4F790010CDF6 /* EventModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DDC2C5D4F790010CDF6 /* EventModel.swift */; };
 		5F687DE02C5D52C50010CDF6 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DDF2C5D52C50010CDF6 /* Event.swift */; };
 		5F687DE52C5E92080010CDF6 /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DE42C5E92080010CDF6 /* CardViewModel.swift */; };
 		5F687DE92C5E931E0010CDF6 /* CardProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DE82C5E931E0010CDF6 /* CardProfile.swift */; };
 		5F687DEB2C5E938F0010CDF6 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DEA2C5E938F0010CDF6 /* UserProfile.swift */; };
-		5F687DED2C5F7E6A0010CDF6 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DEC2C5F7E6A0010CDF6 /* SwiftUIView.swift */; };
+		5F687DED2C5F7E6A0010CDF6 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DEC2C5F7E6A0010CDF6 /* CardView.swift */; };
+		5F687DEF2C63DF870010CDF6 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DEE2C63DF870010CDF6 /* ProfileView.swift */; };
+		5F687DF12C6411F20010CDF6 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DF02C6411F20010CDF6 /* AuthViewModel.swift */; };
+		5F687DF32C6430280010CDF6 /* NetworkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DF22C6430280010CDF6 /* NetworkViewModel.swift */; };
 		5FBEA2EC2C287D8700FA185D /* BLEViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBEA2EB2C287D8700FA185D /* BLEViewModel.swift */; };
 		5FBEA2F12C28857F00FA185D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBEA2F02C28857F00FA185D /* Constants.swift */; };
 		5FBEA2F62C551F2E00FA185D /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBEA2F52C551F2E00FA185D /* SplashScreenView.swift */; };
@@ -61,14 +63,16 @@
 		5F2DC3722C56B29F0015EBE7 /* Simple.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Simple.ttf; sourceTree = "<group>"; };
 		5F2DC3732C56B2A20015EBE7 /* Freehand.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Freehand.ttf; sourceTree = "<group>"; };
 		5F2DC37A2C5928460015EBE7 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
-		5F687DD72C5D49710010CDF6 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		5F687DD92C5D4EFF0010CDF6 /* RegularHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularHubView.swift; sourceTree = "<group>"; };
 		5F687DDC2C5D4F790010CDF6 /* EventModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventModel.swift; sourceTree = "<group>"; };
 		5F687DDF2C5D52C50010CDF6 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		5F687DE42C5E92080010CDF6 /* CardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewModel.swift; sourceTree = "<group>"; };
 		5F687DE82C5E931E0010CDF6 /* CardProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardProfile.swift; sourceTree = "<group>"; };
 		5F687DEA2C5E938F0010CDF6 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
-		5F687DEC2C5F7E6A0010CDF6 /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
+		5F687DEC2C5F7E6A0010CDF6 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		5F687DEE2C63DF870010CDF6 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		5F687DF02C6411F20010CDF6 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		5F687DF22C6430280010CDF6 /* NetworkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkViewModel.swift; sourceTree = "<group>"; };
 		5FBEA2EB2C287D8700FA185D /* BLEViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEViewModel.swift; sourceTree = "<group>"; };
 		5FBEA2F02C28857F00FA185D /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		5FBEA2F52C551F2E00FA185D /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
@@ -141,6 +145,8 @@
 			children = (
 				5F687DDF2C5D52C50010CDF6 /* Event.swift */,
 				5F687DE42C5E92080010CDF6 /* CardViewModel.swift */,
+				5F687DF02C6411F20010CDF6 /* AuthViewModel.swift */,
+				5F687DF22C6430280010CDF6 /* NetworkViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -148,10 +154,10 @@
 		5F687DE12C5D54300010CDF6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				5F687DEC2C5F7E6A0010CDF6 /* SwiftUIView.swift */,
+				5F687DEC2C5F7E6A0010CDF6 /* CardView.swift */,
+				5F687DEE2C63DF870010CDF6 /* ProfileView.swift */,
 				5FCB9D222C0DE82A001172BD /* WelcomeView.swift */,
 				5F2DC37A2C5928460015EBE7 /* SignUpView.swift */,
-				5F687DD72C5D49710010CDF6 /* CardView.swift */,
 				5F687DD92C5D4EFF0010CDF6 /* RegularHubView.swift */,
 				5FBEA2F52C551F2E00FA185D /* SplashScreenView.swift */,
 			);
@@ -382,9 +388,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F687DF32C6430280010CDF6 /* NetworkViewModel.swift in Sources */,
 				5FCB9D232C0DE82A001172BD /* WelcomeView.swift in Sources */,
 				5F687DE92C5E931E0010CDF6 /* CardProfile.swift in Sources */,
-				5F687DED2C5F7E6A0010CDF6 /* SwiftUIView.swift in Sources */,
+				5F687DED2C5F7E6A0010CDF6 /* CardView.swift in Sources */,
 				5FCB9D252C0DE82A001172BD /* Item.swift in Sources */,
 				5F687DDA2C5D4EFF0010CDF6 /* RegularHubView.swift in Sources */,
 				5FBEA2EC2C287D8700FA185D /* BLEViewModel.swift in Sources */,
@@ -392,11 +399,12 @@
 				5FBEA2F12C28857F00FA185D /* Constants.swift in Sources */,
 				5F687DE52C5E92080010CDF6 /* CardViewModel.swift in Sources */,
 				5F2DC37B2C5928460015EBE7 /* SignUpView.swift in Sources */,
-				5F687DD82C5D49710010CDF6 /* CardView.swift in Sources */,
 				5F687DEB2C5E938F0010CDF6 /* UserProfile.swift in Sources */,
 				5F687DDD2C5D4F790010CDF6 /* EventModel.swift in Sources */,
+				5F687DF12C6411F20010CDF6 /* AuthViewModel.swift in Sources */,
 				5FBEA2F62C551F2E00FA185D /* SplashScreenView.swift in Sources */,
 				5F687DE02C5D52C50010CDF6 /* Event.swift in Sources */,
+				5F687DEF2C63DF870010CDF6 /* ProfileView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

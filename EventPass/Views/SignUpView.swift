@@ -7,14 +7,20 @@
 
 import SwiftUI
 
+enum FocusedField {
+    case firstName
+    case lastName
+    case email
+    case password
+    case passwordRepeat
+   }
+
 struct SignUpView: View {
     
-    @State private var firstName = ""
-    @State private var lastName = ""
-    @State private var email = ""
-    @State private var password = ""
-    @State private var passwordRepeat = ""
-    @State private var acceptedTerms = false
+    @EnvironmentObject var viewModel: AuthViewModel
+    
+    @FocusState private var focusedField: FocusedField?
+    
     @State private var showTerms = false
     
     
@@ -26,12 +32,12 @@ struct SignUpView: View {
             VStack {
                 Spacer()
                 HStack {
-                    InputElement("First Name", binding: $firstName)
-                    InputElement("Last Name", binding: $lastName)
+                    InputElement("First Name", binding: $viewModel.firstName, focusedFieldName: .firstName)
+                    InputElement("Last Name", binding: $viewModel.lastName, focusedFieldName: .lastName)
                 }
-                InputElement("Email", binding: $email)
-                InputElement("Password", binding: $password, secure: true)
-                InputElement("Re-enter Password", binding: $passwordRepeat, secure: true)
+                InputElement("Email", binding: $viewModel.email, focusedFieldName: .email)
+                InputElement("Password", binding: $viewModel.password, focusedFieldName: .password, secure: true)
+                InputElement("Re-enter Password", binding: $viewModel.passwordRepeat,  focusedFieldName: .passwordRepeat, secure: true)
                 
                 TermsAcceptanceView
                 Spacer()
@@ -50,12 +56,26 @@ struct SignUpView: View {
         .sheet(isPresented: $showTerms) {
             TermsView
         }
-        
+        .onSubmit {
+            switch focusedField {
+            case .firstName:
+                focusedField = .lastName
+            case .lastName:
+                focusedField = .email
+            case .email:
+                focusedField = .password
+            case .password:
+                focusedField = .passwordRepeat
+            default:
+                focusedField = nil
+            }
+            
+        }
     }
     
     var TermsAcceptanceView: some View {
         HStack {
-           Toggle(isOn: $acceptedTerms, label: {
+            Toggle(isOn: $viewModel.acceptedTerms, label: {
                 VStack(alignment: .leading) {
                     Text("By toggling this button, I accept the")
                     Button(action: {
@@ -101,13 +121,13 @@ struct SignUpView: View {
             .foregroundColor(.white)
             .background(
                 RoundedRectangle(cornerRadius:30, style: .continuous)
-                    .fill(LinearGradient(colors: acceptedTerms ? [.blue, .cyan] : [.gray, .gray],
+                    .fill(LinearGradient(colors: viewModel.acceptedTerms ? [.blue, .cyan] : [.gray, .gray],
                                          startPoint: .top, endPoint: .bottomTrailing))
             )
-            .foregroundColor(acceptedTerms ? Color.blue : Color.gray)
-            .animation(.linear(duration: 0.2), value: acceptedTerms)
+            .foregroundColor(viewModel.acceptedTerms ? Color.blue : Color.gray)
+            .animation(.linear(duration: 0.2), value: viewModel.acceptedTerms)
         }
-        .disabled(!acceptedTerms)
+        .disabled(!viewModel.acceptedTerms)
 
     }
     
@@ -128,7 +148,7 @@ struct SignUpView: View {
         }
     }
     
-    func InputElement(_ label: String, binding: Binding<String>, maxChar: Int = 20, secure: Bool = false) -> some View {
+        func InputElement(_ label: String, binding: Binding<String>, focusedFieldName: FocusedField, maxChar: Int = 20, secure: Bool = false) -> some View {
         let field = secure ? AnyView(SecureField(label, text: binding)) : AnyView(TextField(label, text: binding))
         
         return field
@@ -149,6 +169,7 @@ struct SignUpView: View {
             }
             .padding(.horizontal, 30)
             .padding(.bottom, 50)
+            .focused($focusedField, equals: focusedFieldName)
 
         }
 }
@@ -157,4 +178,5 @@ struct SignUpView: View {
     NavigationStack {
         SignUpView()
     }
+    .environmentObject(AuthViewModel())
 }
