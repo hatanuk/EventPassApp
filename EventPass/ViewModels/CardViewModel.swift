@@ -39,28 +39,4 @@ class CardViewModel: ObservableObject {
         }
     }
         
-    func load(user: UserProfile) {
-        db.collection("businessCards").document(user.id).getDocument { document, error in
-            if let document = document, document.exists {
-                let data = document.data()
-                self.cardProfile = CardProfile(
-                    id: user.id,
-                    displayName: data?["displayName"] as? String,
-                    title: data?["title"] as? String ?? "",
-                    workplace: data?["workplace"] as? String ?? "",
-                    email: data?["email"] as? String ?? "",
-                    phone: data?["phone"] as? String ?? "",
-                    profilePictureURL: data?["profile_picture"] as? String ?? Constants.defaultProfileImageURL
-                )
-                
-                // sets the card's display name to the user's full name as a default
-                if self.cardProfile.displayName?.count == 0 {
-                    self.cardProfile.displayName = "John Doe"
-                }
-            } else {
-                print("Document does not exist")
-            }
-        }
-        
-    }
 }

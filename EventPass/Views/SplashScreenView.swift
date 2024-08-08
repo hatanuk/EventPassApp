@@ -56,6 +56,12 @@ struct SplashScreenView: View {
             }
             
             .onChange(of: authViewModel.authenticationState) {_, newValue in
+                if newValue == .authenticating {
+                    Task {
+                        await authViewModel.signInAnonymously()
+                    }
+                }
+                
                 if newValue == .authenticated {
                     withAnimation(.easeIn(duration: animationTime)){
                         isShown = false

@@ -25,14 +25,9 @@ class AuthViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var passwordRepeat: String = ""
-    
     @Published var acceptedTerms: Bool = false
-    
     @Published var firstName: String = ""
     @Published var lastName: String = ""
-    
-    @Published var userProfile: UserProfile?
-    @Published var cardProfile: CardProfile?
     
     @Published var errorMessage = ""
     
@@ -41,6 +36,8 @@ class AuthViewModel: ObservableObject {
     @Published var authenticationState: AuthenticationState = .unauthenticated
     @Published var authenticationType: AuthenticationType = .withAnonymous
     
+    private var userModel = UserModel()
+    
 }
 
 // MARK: - Actions
@@ -48,32 +45,47 @@ class AuthViewModel: ObservableObject {
 extension AuthViewModel {
     
     
-    func loginEmailPassword() async -> Bool {
+    func signInEmailPassword() async -> Bool {
         do {
-            let authResult = try await Auth.auth().signIn(withEmail: email, password: password)
+            let authResult = try await userModel.signIn(email: email, password: password)
             user = authResult.user
-            userProfile = UserProfile(id: authResult.user.uid, firstName: firstName, lastName: lastName)
-            cardProfile = CardProfile(id: authResult.user.uid)
             print("LOGIN FROM: \(authResult.user.uid)")
+            authenticationState = .authenticated
             return true
             
         } catch {
             errorMessage = error.localizedDescription
+            print("ANONYMOUS LOGIN ERROR: \(errorMessage)")
             return false
         }
     }
     
+    func signInAnonymously() async -> Bool {
+        
+        do {
+            let authResult = try await userModel.signInAnonymously()
+            user = authResult.user
+            print("ANONYMOUS LOGIN FROM: \(authResult.user.uid)")
+            authenticationState = .authenticated
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            print("ANONYMOUS LOGIN ERROR: \(errorMessage)")
+            return false
+        }
+        
+    }
+    
     func signUpEmailPassword() async -> Bool {
         do {
-            let authResult = try await Auth.auth().signIn(withEmail: email, password: password)
+            let authResult = try await userModel.signUp(email: email, password: password)
             user = authResult.user
-            userProfile = UserProfile(id: authResult.user.uid, firstName: firstName, lastName: lastName)
-            cardProfile = CardProfile(id: authResult.user.uid)
-            print("LOGIN FROM: \(authResult.user.uid)")
+            print("SIGNUP FROM: \(authResult.user.uid)")
             return true
             
         } catch {
             errorMessage = error.localizedDescription
+            print("SIGNUP ERROR: \(errorMessage)")
             return false
         }
     }
@@ -83,21 +95,12 @@ extension AuthViewModel {
         // bypass, remove later
         self.authenticationState = .authenticated
         
-        if Auth.auth().currentUser != nil {
+        if user != nil {
             self.authenticationState = .authenticated
         } else {
             self.authenticationState = .authenticating
-            loginAnonymously()
         }
     }
 
-    func loginAnonymously() {
-        Auth.auth().signInAnonymously() { authResult, error in
-            if let error = error {
-                print("Error logging in anonymously: \(error)")
-                return
-            }
-            self.authenticationState = .authenticated
-        }
-    }
+    
 }

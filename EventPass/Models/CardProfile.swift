@@ -9,25 +9,40 @@ import Foundation
 import SwiftData
 
 
-class CardProfile {
+struct CardProfile {
+    
+    let model = UserModel()
     
     let id: String
-    var displayName: String?
-    var title: String?
-    var workplace: String?
-    var email: String?
-    var phone: String?
-    var profilePictureURL: String?
+    var displayName: String? = ""
+    var title: String? = ""
+    var workplace: String? = ""
+    var email: String? = ""
+    var phone: String? = "''"
+    var profilePictureURL: String? = ""
     
-    init(id: String, displayName: String? = nil, title: String? = nil, workplace: String? = nil, email: String? = nil, phone: String? = nil, profilePictureURL: String? = nil) {
-        self.id = id
-        self.displayName = displayName
-        self.title = title
-        self.workplace = workplace
-        self.email = email
-        self.phone = phone
-        self.profilePictureURL = profilePictureURL
+    init(fromUserId userId: String) async {
+        self.id = userId
+        let queryResult = await model.fetchUserDetails(userId: userId)
+        
     }
+    
+    init(id: String,
+             displayName: String? = nil,
+             title: String? = nil,
+             workplace: String? = nil,
+             email: String? = nil,
+             phone: String? = nil,
+             profilePictureURL: String? = nil) {
+            self.id = id
+            self.displayName = displayName
+            self.title = title
+            self.workplace = workplace
+            self.email = email
+            self.phone = phone
+            self.profilePictureURL = profilePictureURL
+        }
+    
 
     
 }

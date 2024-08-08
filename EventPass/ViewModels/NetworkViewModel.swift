@@ -34,5 +34,6 @@ class NetworkViewModel: ObservableObject {
         }
         monitor.start(queue: queue)
     }
+
     
 }
