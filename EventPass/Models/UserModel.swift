@@ -13,6 +13,10 @@ enum UserError: Error {
     case userNotFound
 }
 
+enum DatabaseError: Error {
+    case documentNotFound
+}
+
 struct UserModel {
     
     private var db = Firestore.firestore()
@@ -72,37 +76,46 @@ struct UserModel {
     
     //MARK: - Database
     
-    func fetchUserDetails(userId: String) async {
+    func fetchUserDetails(userId: String) async throws -> [String: String?] {
+        var document: DocumentSnapshot?
+           
+       do {
+           document = try await db.collection("userDetails").document(userId).getDocument()
+       } catch {
+           throw error
+       }
+       
+       guard let document = document, document.exists else {
+           print("Document does not exist")
+           throw DatabaseError.documentNotFound
+       }
+       
+       let data = document.data()
+       var fetchedDetails: [String: String?] = [
+           "id": userId,
+           "firstName": data?["firstName"] as? String,
+           "lastName": data?["lastName"] as? String,
+           "displayName": data?["displayName"] as? String,
+           "title": data?["title"] as? String,
+           "workplace": data?["workplace"] as? String,
+           "email": data?["email"] as? String,
+           "phone": data?["phone"] as? String,
+           "profilePictureURL": data?["profile_picture"] as? String ?? Constants.defaultProfileImageURL
+       ]
+       
+       // sets the card's display name to the user's full name as a default
+       if fetchedDetails["displayName"] == nil {
+           if let firstName = fetchedDetails["firstName"] as? String, let lastName = fetchedDetails["lastName"] as? String {
+               fetchedDetails["displayName"] = firstName + " " + lastName
+           } else {
+               // to avoid messing up the UI, a default display name is given in an edge scenario
+               fetchedDetails["displayName"] = "(unknown)"
+           }
+       }
         
-        db.collection("userDetails").document(userId).getDocument { document, error in
-            if let document = document, document.exists {
-                let data = document.data()
-                var fetchedDetails: [String: String?] = [
-                    "id": userId,
-                    "firstName": data?["firstName"] as? String?,
-                    "lastName": data?["lastName"] as? String?,
-                    "displayName": data?["displayName"] as? String?,
-                    "title": data?["title"] as? String?,
-                    "workplace": data?["workplace"] as? String?,
-                    "email": data?["email"] as? String?,
-                    "phone": data?["phone"] as? String?,
-                    "profilePictureURL": data?["profile_picture"] as? String ?? Constants.defaultProfileImageURL
-                ]
-                
-                // sets the card's display name to the user's full name as a default
-                guard let _ = fetchedDetails["displayName"] else {
-                    if let firstName = fetchedDetails["firstName"], let lastName = fetchedDetails["lastName"] {
-                        fetchedDetails["displayName"] = firstName + " " + lastName
-                    } else {
-                        fetchedDetails["displayName"] = "(unknown)"
-                    }
-                    
-                }
-            } else {
-                print("Document does not exist")
-            }
-        }
-    }
+        return fetchedDetails
+       
+   }
     
     // Delete information from firestore associated with an account
     private func deleteUserDetails(userId: String) async {}

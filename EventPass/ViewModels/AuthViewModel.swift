@@ -44,6 +44,19 @@ class AuthViewModel: ObservableObject {
 // methods relating to authentication actions eg. logging in
 extension AuthViewModel {
     
+    func clearAllValues() {
+        email = ""
+        password = ""
+        passwordRepeat = ""
+        firstName = ""
+        lastName = ""
+    }
+    
+    func allPropertiesFilled() -> Bool {
+        return !email.isEmpty && !password.isEmpty && !passwordRepeat.isEmpty && !firstName.isEmpty && !lastName.isEmpty
+    }
+    
+    
     
     func signInEmailPassword() async -> Bool {
         do {

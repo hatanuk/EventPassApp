@@ -23,7 +23,14 @@ struct CardProfile {
     
     init(fromUserId userId: String) async {
         self.id = userId
-        let queryResult = await model.fetchUserDetails(userId: userId)
+        
+        do {
+            let queryResult = try await model.fetchUserDetails(userId: userId)
+        } catch DatabaseError.documentNotFound {
+            print("User not found")
+        } catch {
+            print("Error: \(error.localizedDescription)")
+        }
         
     }
     

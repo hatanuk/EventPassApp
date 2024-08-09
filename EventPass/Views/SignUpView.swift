@@ -22,6 +22,12 @@ struct SignUpView: View {
     @FocusState private var focusedField: FocusedField?
     
     @State private var showTerms = false
+    @State private var errorShown = false
+    
+    private var canConfirm: Bool {
+        return viewModel.acceptedTerms && viewModel.allPropertiesFilled()
+    }
+    
     
     
     @Environment(\.presentationMode) var presentationMode
@@ -44,6 +50,16 @@ struct SignUpView: View {
                 ConfirmButtonView
                     .padding(.vertical, 40)
                 
+            }
+            .alert(viewModel.errorMessage, isPresented: $errorShown) {
+                Button("OK", role: .cancel) { 
+                    viewModel.errorMessage = ""
+                }
+            }
+            .onChange(of: viewModel.errorMessage) { _, newValue in
+                if newValue.count > 0 {
+                   errorShown = true
+                }
             }
            
         }
@@ -112,7 +128,13 @@ struct SignUpView: View {
     var ConfirmButtonView: some View {
         
         Button {
-            
+            var success: Bool = false
+            Task {
+                success = await viewModel.signInEmailPassword()
+            }
+            if success {
+                presentationMode.wrappedValue.dismiss()
+            }
         } label : {
             Text("Confirm")
             .frame(width:150, height:60)
@@ -121,13 +143,13 @@ struct SignUpView: View {
             .foregroundColor(.white)
             .background(
                 RoundedRectangle(cornerRadius:30, style: .continuous)
-                    .fill(LinearGradient(colors: viewModel.acceptedTerms ? [.blue, .cyan] : [.gray, .gray],
+                    .fill(LinearGradient(colors: canConfirm ? [.blue, .cyan] : [.gray, .gray],
                                          startPoint: .top, endPoint: .bottomTrailing))
             )
-            .foregroundColor(viewModel.acceptedTerms ? Color.blue : Color.gray)
-            .animation(.linear(duration: 0.2), value: viewModel.acceptedTerms)
+            .foregroundColor(canConfirm ? Color.blue : Color.gray)
+            .animation(.linear(duration: 0.2), value: canConfirm)
         }
-        .disabled(!viewModel.acceptedTerms)
+        .disabled(!canConfirm)
 
     }
     
