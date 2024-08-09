@@ -19,6 +19,10 @@ enum AuthenticationType {
   case withAccount
 }
 
+enum SignUpError: Error {
+    case passwordMismatch, invalidEmail, shortPassword, weakPassword
+}
+
 
 class AuthViewModel: ObservableObject {
      
@@ -40,8 +44,7 @@ class AuthViewModel: ObservableObject {
     
 }
 
-// MARK: - Actions
-// methods relating to authentication actions eg. logging in
+
 extension AuthViewModel {
     
     func clearAllValues() {
@@ -56,19 +59,53 @@ extension AuthViewModel {
         return !email.isEmpty && !password.isEmpty && !passwordRepeat.isEmpty && !firstName.isEmpty && !lastName.isEmpty
     }
     
+    func validateSignUp() throws {
+        
+        let containsCapitalLetter = password.range(of: "[A-Z]", options: .regularExpression) != nil
+        let containsNumber = password.range(of: "[0-9]", options: .regularExpression) != nil
+        
+        if (!email.isValidEmail) {
+            throw SignUpError.invalidEmail
+        } else if (password != passwordRepeat) {
+            throw SignUpError.passwordMismatch
+        } else if (password.count < 6) {
+            throw SignUpError.shortPassword
+        } else if (!containsCapitalLetter || !containsNumber) {
+            throw SignUpError.weakPassword
+        }
+    }
     
+// MARK: - Actions
+// methods relating to authentication actions eg. logging in
     
-    func signInEmailPassword() async -> Bool {
+    func signUpEmailPassword() async -> Bool {
+        
         do {
+            // Validation
+            try validateSignUp()
+            
+            
             let authResult = try await userModel.signIn(email: email, password: password)
             user = authResult.user
-            print("LOGIN FROM: \(authResult.user.uid)")
+            print("SIGNUP FROM: \(authResult.user.uid)")
             authenticationState = .authenticated
             return true
             
+        } catch SignUpError.invalidEmail {
+            errorMessage = "Invalid email address"
+            return false
+        } catch SignUpError.passwordMismatch {
+            errorMessage = "Passwords do not match"
+            return false
+        } catch SignUpError.shortPassword {
+            errorMessage = "Password must be at least 6 characters"
+            return false
+        } catch SignUpError.weakPassword {
+            errorMessage = "Password must contain at least one capital letter and one number"
+            return false
         } catch {
             errorMessage = error.localizedDescription
-            print("ANONYMOUS LOGIN ERROR: \(errorMessage)")
+            print("SIGNUP ERROR: \(error)")
             return false
         }
     }
@@ -89,16 +126,16 @@ extension AuthViewModel {
         
     }
     
-    func signUpEmailPassword() async -> Bool {
+    func signInEmailPassword() async -> Bool {
         do {
-            let authResult = try await userModel.signUp(email: email, password: password)
+            let authResult = try await userModel.signIn(email: email, password: password)
             user = authResult.user
-            print("SIGNUP FROM: \(authResult.user.uid)")
+            print("LOGIN FROM: \(authResult.user.uid)")
             return true
             
         } catch {
             errorMessage = error.localizedDescription
-            print("SIGNUP ERROR: \(errorMessage)")
+            print("LOGIN ERROR: \(error)")
             return false
         }
     }
@@ -116,4 +153,12 @@ extension AuthViewModel {
     }
 
     
+}
+
+extension String {
+    var isValidEmail: Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailPred.evaluate(with: self)
+    }
 }

@@ -41,9 +41,9 @@ struct SignUpView: View {
                     InputElement("First Name", binding: $viewModel.firstName, focusedFieldName: .firstName)
                     InputElement("Last Name", binding: $viewModel.lastName, focusedFieldName: .lastName)
                 }
-                InputElement("Email", binding: $viewModel.email, focusedFieldName: .email)
-                InputElement("Password", binding: $viewModel.password, focusedFieldName: .password, secure: true)
-                InputElement("Re-enter Password", binding: $viewModel.passwordRepeat,  focusedFieldName: .passwordRepeat, secure: true)
+                InputElement("Email", binding: $viewModel.email, focusedFieldName: .email, maxChar: 50)
+                InputElement("Password", binding: $viewModel.password, focusedFieldName: .password, maxChar: 100, secure: true)
+                InputElement("Re-enter Password", binding: $viewModel.passwordRepeat,  focusedFieldName: .passwordRepeat, maxChar: 100, secure: true)
                 
                 TermsAcceptanceView
                 Spacer()
@@ -130,7 +130,7 @@ struct SignUpView: View {
         Button {
             var success: Bool = false
             Task {
-                success = await viewModel.signInEmailPassword()
+                success = await viewModel.signUpEmailPassword()
             }
             if success {
                 presentationMode.wrappedValue.dismiss()
@@ -170,7 +170,7 @@ struct SignUpView: View {
         }
     }
     
-        func InputElement(_ label: String, binding: Binding<String>, focusedFieldName: FocusedField, maxChar: Int = 20, secure: Bool = false) -> some View {
+        func InputElement(_ label: String, binding: Binding<String>, focusedFieldName: FocusedField, maxChar: Int = 30, secure: Bool = false) -> some View {
         let field = secure ? AnyView(SecureField(label, text: binding)) : AnyView(TextField(label, text: binding))
         
         return field
