@@ -25,6 +25,9 @@ enum SignUpError: Error {
 
 
 class AuthViewModel: ObservableObject {
+    
+    // minimum amount of characters for a valid password
+    let MIN_PASS_LENGTH = 8
      
     @Published var email: String = ""
     @Published var password: String = ""
@@ -32,11 +35,8 @@ class AuthViewModel: ObservableObject {
     @Published var acceptedTerms: Bool = false
     @Published var firstName: String = ""
     @Published var lastName: String = ""
-    
     @Published var errorMessage = ""
-    
     @Published var user: User?
-    
     @Published var authenticationState: AuthenticationState = .unauthenticated
     @Published var authenticationType: AuthenticationType = .withAnonymous
     
@@ -47,17 +47,28 @@ class AuthViewModel: ObservableObject {
 
 extension AuthViewModel {
     
-    func clearAllValues() {
-        email = ""
-        password = ""
-        passwordRepeat = ""
-        firstName = ""
-        lastName = ""
+    
+    func clearAllValues() async {
+        await MainActor.run {
+            email = ""
+            password = ""
+            passwordRepeat = ""
+            firstName = ""
+            lastName = ""
+            errorMessage = ""
+            acceptedTerms = false
+        }
     }
     
     func allPropertiesFilled() -> Bool {
         return !email.isEmpty && !password.isEmpty && !passwordRepeat.isEmpty && !firstName.isEmpty && !lastName.isEmpty
     }
+    
+    func emailPasswordFilled() -> Bool {
+        !email.isEmpty && !password.isEmpty
+    }
+    
+    // Validation
     
     func validateSignUp() throws {
         
@@ -68,7 +79,7 @@ extension AuthViewModel {
             throw SignUpError.invalidEmail
         } else if (password != passwordRepeat) {
             throw SignUpError.passwordMismatch
-        } else if (password.count < 6) {
+        } else if (password.count < MIN_PASS_LENGTH) {
             throw SignUpError.shortPassword
         } else if (!containsCapitalLetter || !containsNumber) {
             throw SignUpError.weakPassword
@@ -84,27 +95,25 @@ extension AuthViewModel {
             // Validation
             try validateSignUp()
             
-            
             let authResult = try await userModel.signIn(email: email, password: password)
-            user = authResult.user
+            await updateUser(to: authResult.user)
             print("SIGNUP FROM: \(authResult.user.uid)")
-            authenticationState = .authenticated
             return true
             
         } catch SignUpError.invalidEmail {
-            errorMessage = "Invalid email address"
+            await updateErrorMessage(to: "Invalid email address")
             return false
         } catch SignUpError.passwordMismatch {
-            errorMessage = "Passwords do not match"
+            await updateErrorMessage(to: "Passwords do not match")
             return false
         } catch SignUpError.shortPassword {
-            errorMessage = "Password must be at least 6 characters"
+            await updateErrorMessage(to:  "Password must be at least \(MIN_PASS_LENGTH) characters")
             return false
         } catch SignUpError.weakPassword {
-            errorMessage = "Password must contain at least one capital letter and one number"
+            await updateErrorMessage(to: "Password must contain at least one capital letter and one number")
             return false
         } catch {
-            errorMessage = error.localizedDescription
+            await updateErrorMessage(to: error.localizedDescription)
             print("SIGNUP ERROR: \(error)")
             return false
         }
@@ -114,12 +123,11 @@ extension AuthViewModel {
         
         do {
             let authResult = try await userModel.signInAnonymously()
-            user = authResult.user
+            await updateUser(to: authResult.user)
             print("ANONYMOUS LOGIN FROM: \(authResult.user.uid)")
-            authenticationState = .authenticated
             return true
         } catch {
-            errorMessage = error.localizedDescription
+            await updateErrorMessage(to: error.localizedDescription)
             print("ANONYMOUS LOGIN ERROR: \(errorMessage)")
             return false
         }
@@ -127,28 +135,37 @@ extension AuthViewModel {
     }
     
     func signInEmailPassword() async -> Bool {
+        
         do {
             let authResult = try await userModel.signIn(email: email, password: password)
-            user = authResult.user
+            await updateUser(to: authResult.user)
             print("LOGIN FROM: \(authResult.user.uid)")
             return true
             
+        } catch AuthErrorCode.invalidEmail {
+            await updateErrorMessage(to: "Please make sure the email was entered correctly")
+            return false
+        } catch AuthErrorCode.wrongPassword, AuthErrorCode.userNotFound{
+            await updateErrorMessage(to: "Incorrect user/password combination")
+            return false
         } catch {
-            errorMessage = error.localizedDescription
+            await updateErrorMessage(to: "The login was unsuccessful")
             print("LOGIN ERROR: \(error)")
             return false
         }
     }
     
-    func checkAuthenticationState() {
-        
-        // bypass, remove later
-        self.authenticationState = .authenticated
+    func checkAuthenticationState() async {
         
         if user != nil {
-            self.authenticationState = .authenticated
+            await updateAuthenticationState(to: .authenticated)
         } else {
-            self.authenticationState = .authenticating
+            await updateAuthenticationState(to: .authenticating)
+            let success = await signInAnonymously()
+            if success {
+                await updateAuthenticationState(to: .authenticated)
+            }
+
         }
     }
 
@@ -160,5 +177,72 @@ extension String {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
         return emailPred.evaluate(with: self)
+    }
+}
+
+
+
+// MARK: - Setters
+
+extension AuthViewModel {
+
+    func updateEmail(to newEmail: String) async {
+        await MainActor.run {
+            self.email = newEmail
+        }
+    }
+
+    func updatePassword(to newPassword: String) async {
+        await MainActor.run {
+            self.password = newPassword
+        }
+    }
+
+    func updatePasswordRepeat(to newPasswordRepeat: String) async {
+        await MainActor.run {
+            self.passwordRepeat = newPasswordRepeat
+        }
+    }
+
+    func updateAcceptedTerms(to newAcceptedTerms: Bool) async {
+        await MainActor.run {
+            self.acceptedTerms = newAcceptedTerms
+        }
+    }
+
+    func updateFirstName(to newFirstName: String) async {
+        await MainActor.run {
+            self.firstName = newFirstName
+        }
+    }
+
+    func updateLastName(to newLastName: String) async {
+        await MainActor.run {
+            self.lastName = newLastName
+        }
+    }
+
+    func updateErrorMessage(to newErrorMessage: String) async {
+        await MainActor.run {
+            self.errorMessage = newErrorMessage
+        }
+    }
+
+    func updateUser(to newUser: User?) async {
+        await MainActor.run {
+            self.user = newUser
+        }
+    }
+
+    func updateAuthenticationState(to newState: AuthenticationState) async {
+        await MainActor.run {
+            self.authenticationState = newState
+        }
+    }
+
+    func updateAuthenticationType(to newType: AuthenticationType) async {
+        await MainActor.run {
+            self.authenticationType = newType
+        }
     }
 }

@@ -35,6 +35,7 @@ struct EventPassApp: App {
     var body: some Scene {
         WindowGroup {
             SplashScreenView()
+                .environmentObject(AuthViewModel())
         }
        
     }

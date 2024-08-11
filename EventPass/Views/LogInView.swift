@@ -1,63 +1,51 @@
 //
-//  SignUpView.swift
+//  LogInView.swift
 //  EventPass
 //
-//  Created by Andrew A on 30/07/2024.
+//  Created by Andrew A on 10/08/2024.
 //
 
 import SwiftUI
 
-enum FocusedField {
-    case firstName
-    case lastName
-    case email
-    case password
-    case passwordRepeat
-   }
-
-struct SignUpView: View {
+struct LogInView: View {
     
     @EnvironmentObject var viewModel: AuthViewModel
     
     @FocusState private var focusedField: FocusedField?
     
-    @State private var showTerms = false
+    @State private var showForgotPassword = false
     @State private var errorShown = false
     
     private var canConfirm: Bool {
-        return viewModel.acceptedTerms && viewModel.allPropertiesFilled()
+        return viewModel.email.count > 0 && viewModel.password.count > 0
     }
-    
-    
     
     @Environment(\.presentationMode) var presentationMode
     
     
     var body: some View {
+       
         NavigationStack {
             VStack {
-                Spacer()
-                HStack {
-                    InputElement("First Name", binding: $viewModel.firstName)
-                        .focused($focusedField, equals: .firstName)
-                    InputElement("Last Name", binding: $viewModel.lastName)
-                        .focused($focusedField, equals: .lastName)
-                }
+      
+               
                 InputElement("Email", binding: $viewModel.email, maxChar: 50)
                     .focused($focusedField, equals: .email)
                 InputElement("Password", binding: $viewModel.password, maxChar: 100, secure: true)
                     .focused($focusedField, equals: .password)
-                InputElement("Re-enter Password", binding: $viewModel.passwordRepeat, maxChar: 100, secure: true)
-                    .focused($focusedField, equals: .passwordRepeat)
+                    .padding(.bottom, -30)
                 
-                TermsAcceptanceView
-                Spacer()
+ 
                 ConfirmButtonView
                     .padding(.vertical, 40)
+                ForgotPasswordButton
                 
+                    
+               
             }
+            .padding()
             .alert(viewModel.errorMessage, isPresented: $errorShown) {
-                Button("OK", role: .cancel) { 
+                Button("OK", role: .cancel) {
                     Task {
                         await viewModel.updateErrorMessage(to: "")
                     }
@@ -81,60 +69,32 @@ struct SignUpView: View {
             ToolbarItem(placement: .navigationBarTrailing) {ToolbarCancelView}
            
         }
-        .sheet(isPresented: $showTerms) {
-            TermsView
+        .sheet(isPresented: $showForgotPassword) {
+            ForgotPasswordView
         }
         .onSubmit {
             switch focusedField {
-            case .firstName:
-                focusedField = .lastName
-            case .lastName:
-                focusedField = .email
             case .email:
                 focusedField = .password
-            case .password:
-                focusedField = .passwordRepeat
             default:
                 focusedField = nil
             }
             
         }
+        
     }
     
-    var TermsAcceptanceView: some View {
-        HStack {
-            Toggle(isOn: $viewModel.acceptedTerms, label: {
-                VStack(alignment: .leading) {
-                    Text("By toggling this button, I accept the")
-                    Button(action: {
-                        showTerms.toggle()
-                        }
-                    ) {
-                        Text("terms and conditions")
-                    }
-                }
-            })
-              
-        }
-        .padding(.horizontal, 30)
-    }
-    
-    var TermsView: some View {
-        VStack {
-            Text("Terms and Conditions")
-                .font(.largeTitle)
-                .padding()
-            
-            Text("You agree to enter a soul contract with this company.")
-                .padding()
-            
-            Spacer()
-            Button("Dismiss") {
-                showTerms.toggle()
+    var ForgotPasswordButton: some View {
+        Button(action: {
+            showForgotPassword.toggle()
             }
-            .scaleEffect(1.2)
+        ) {
+            Text("Forgot password?")
         }
-        .padding()
+    }
+    
+    var ForgotPasswordView: some View {
+        Text("Sorry about that.")
     }
      
     var ConfirmButtonView: some View {
@@ -142,7 +102,7 @@ struct SignUpView: View {
         Button {
             var success: Bool = false
             Task {
-                success = await viewModel.signUpEmailPassword()
+                success = await viewModel.signInEmailPassword()
             }
             if success {
                 presentationMode.wrappedValue.dismiss()
@@ -166,7 +126,7 @@ struct SignUpView: View {
     }
     
     var ToolbarTitleView: some View {
-        Text("Sign Up")
+        Text("Log In")
             .font(.system(size: 40))
 
     }
@@ -181,12 +141,13 @@ struct SignUpView: View {
                 .foregroundColor(.red)
         }
     }
-    
 }
 
+
 #Preview {
+    
     NavigationStack {
-        SignUpView()
+        LogInView()
     }
     .environmentObject(AuthViewModel())
 }

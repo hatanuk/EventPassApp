@@ -51,16 +51,13 @@ struct SplashScreenView: View {
             }
             .onChange(of: networkViewModel.connectionState) { _, newValue in
                 if newValue == .connected {
-                    authViewModel.checkAuthenticationState()
+                    Task {
+                        await authViewModel.checkAuthenticationState()
+                    }
                 }
             }
             
             .onChange(of: authViewModel.authenticationState) {_, newValue in
-                if newValue == .authenticating {
-                    Task {
-                        await authViewModel.signInAnonymously()
-                    }
-                }
                 
                 if newValue == .authenticated {
                     withAnimation(.easeIn(duration: animationTime)){

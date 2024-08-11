@@ -74,7 +74,7 @@ struct WelcomeView: View {
                 Text("or")
                     .foregroundColor(.gray)
                 
-                NavigationLink(destination: WelcomeView()) {
+                NavigationLink(destination: LogInView()) {
                     Text("log in")
                         .foregroundColor(.blue)
                 }
@@ -150,4 +150,6 @@ struct WelcomeView: View {
 #Preview {
     WelcomeView()
         .modelContainer(for: Item.self, inMemory: true)
+        .environmentObject(AuthViewModel())
+    
 }
