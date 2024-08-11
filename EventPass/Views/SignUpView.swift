@@ -142,11 +142,13 @@ struct SignUpView: View {
         Button {
             var success: Bool = false
             Task {
+                print("current user: " + (viewModel.user?.uid ?? "none"))
                 success = await viewModel.signUpEmailPassword()
+                if success {
+                    presentationMode.wrappedValue.dismiss()
+                }
             }
-            if success {
-                presentationMode.wrappedValue.dismiss()
-            }
+            
         } label : {
             Text("Confirm")
             .frame(width:150, height:60)

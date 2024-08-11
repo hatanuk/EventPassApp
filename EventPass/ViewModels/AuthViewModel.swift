@@ -28,6 +28,8 @@ class AuthViewModel: ObservableObject {
     
     // minimum amount of characters for a valid password
     let MIN_PASS_LENGTH = 8
+    
+    let defaultErrorMessage = "The operation was unsuccesful, please try again later"
      
     @Published var email: String = ""
     @Published var password: String = ""
@@ -91,11 +93,26 @@ extension AuthViewModel {
     
     func signUpEmailPassword() async -> Bool {
         
+        // Sign up is accomplished by linking a mandatory anonymous account with a username-password credential.
+        // Users should be signed in anonymously during launch but perform this check either way
+        guard let user = user else {
+            _ = await signInAnonymously()
+            await updateErrorMessage(to: defaultErrorMessage)
+            return false
+    
+        }
+        
+        // If the user is not anonymous, they must already be signed in
+        guard user.isAnonymous else {
+            await updateErrorMessage(to: "Already signed in!")
+            return false
+        }
+        
         do {
             // Validation
             try validateSignUp()
             
-            let authResult = try await userModel.signIn(email: email, password: password)
+            let authResult = try await userModel.signUp(email: email, password: password, user: user)
             await updateUser(to: authResult.user)
             print("SIGNUP FROM: \(authResult.user.uid)")
             return true
@@ -113,7 +130,7 @@ extension AuthViewModel {
             await updateErrorMessage(to: "Password must contain at least one capital letter and one number")
             return false
         } catch {
-            await updateErrorMessage(to: error.localizedDescription)
+            await updateErrorMessage(to: defaultErrorMessage)
             print("SIGNUP ERROR: \(error)")
             return false
         }
@@ -127,7 +144,7 @@ extension AuthViewModel {
             print("ANONYMOUS LOGIN FROM: \(authResult.user.uid)")
             return true
         } catch {
-            await updateErrorMessage(to: error.localizedDescription)
+            await updateErrorMessage(to: defaultErrorMessage)
             print("ANONYMOUS LOGIN ERROR: \(errorMessage)")
             return false
         }
@@ -135,8 +152,15 @@ extension AuthViewModel {
     }
     
     func signInEmailPassword() async -> Bool {
+       
+        
+        guard let user = user, user.isAnonymous else {
+            await updateErrorMessage(to: "Already signed in!")
+            return false
+        }
         
         do {
+            try userModel.signOut()
             let authResult = try await userModel.signIn(email: email, password: password)
             await updateUser(to: authResult.user)
             print("LOGIN FROM: \(authResult.user.uid)")
@@ -149,8 +173,24 @@ extension AuthViewModel {
             await updateErrorMessage(to: "Incorrect user/password combination")
             return false
         } catch {
-            await updateErrorMessage(to: "The login was unsuccessful")
+            await updateErrorMessage(to: defaultErrorMessage)
             print("LOGIN ERROR: \(error)")
+            return false
+        }
+    }
+    
+    func signOut() async -> Bool {
+        do {
+            // Signs the user out and then generates them a new anonymous account
+            try userModel.signOut()
+            if await signInAnonymously() {
+                return true
+            } else {
+                throw NSError()
+            }
+        } catch {
+            await updateErrorMessage(to: defaultErrorMessage)
+            print("SIGNOUT ERROR: \(error)")
             return false
         }
     }
@@ -183,6 +223,8 @@ extension String {
 
 
 // MARK: - Setters
+
+// Published variables must be altered on the main thread, and these wrappings facilitate that
 
 extension AuthViewModel {
 

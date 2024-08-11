@@ -42,9 +42,10 @@ struct UserModel {
         }
     }
     
-    func signUp(email: String, password: String) async throws -> AuthDataResult {
+    func signUp(email: String, password: String, user: User) async throws -> AuthDataResult {
         do {
-            let authResult = try await Auth.auth().createUser(withEmail: email, password: password)
+            let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+            let authResult = try await user.link(with: credential)
             return authResult
         } catch {
             throw error
