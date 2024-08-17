@@ -50,29 +50,10 @@ class AuthViewModel: ObservableObject {
 extension AuthViewModel {
     
     
-    func clearAllValues() async {
-        await MainActor.run {
-            email = ""
-            password = ""
-            passwordRepeat = ""
-            firstName = ""
-            lastName = ""
-            errorMessage = ""
-            acceptedTerms = false
-        }
-    }
-    
-    func allPropertiesFilled() -> Bool {
-        return !email.isEmpty && !password.isEmpty && !passwordRepeat.isEmpty && !firstName.isEmpty && !lastName.isEmpty
-    }
-    
-    func emailPasswordFilled() -> Bool {
-        !email.isEmpty && !password.isEmpty
-    }
     
     // Validation
     
-    func validateSignUp() throws {
+    private func validateSignUp() throws {
         
         let containsCapitalLetter = password.range(of: "[A-Z]", options: .regularExpression) != nil
         let containsNumber = password.range(of: "[0-9]", options: .regularExpression) != nil
@@ -88,8 +69,46 @@ extension AuthViewModel {
         }
     }
     
+    
+    private func signOutSafely() async {
+        do {
+            try userModel.signOut()
+            await updateUser(to: nil)
+        } catch {
+            print("ERROR SAFELY SIGNING OUT: \(error)")
+        }
+
+    }
+    
+    
+    
 // MARK: - Actions
 // methods relating to authentication actions eg. logging in
+// these are public
+    
+    func allPropertiesFilled() -> Bool {
+        return !email.isEmpty && !password.isEmpty && !passwordRepeat.isEmpty && !firstName.isEmpty && !lastName.isEmpty
+    }
+    
+    func emailPasswordFilled() -> Bool {
+        !email.isEmpty && !password.isEmpty
+    }
+    
+    func clearAllValues() async {
+        await MainActor.run {
+            email = ""
+            password = ""
+            passwordRepeat = ""
+            firstName = ""
+            lastName = ""
+            errorMessage = ""
+            acceptedTerms = false
+        }
+    }
+    
+    func getUserId() -> String? {
+        return Auth.auth().currentUser?.uid
+    }
     
     func signUpEmailPassword() async -> Bool {
         
@@ -160,7 +179,7 @@ extension AuthViewModel {
         }
         
         do {
-            try userModel.signOut()
+            await signOutSafely()
             let authResult = try await userModel.signIn(email: email, password: password)
             await updateUser(to: authResult.user)
             print("LOGIN FROM: \(authResult.user.uid)")
@@ -182,7 +201,7 @@ extension AuthViewModel {
     func signOut() async -> Bool {
         do {
             // Signs the user out and then generates them a new anonymous account
-            try userModel.signOut()
+            await signOutSafely()
             if await signInAnonymously() {
                 return true
             } else {
@@ -209,7 +228,6 @@ extension AuthViewModel {
         }
     }
 
-    
 }
 
 extension String {
@@ -219,8 +237,6 @@ extension String {
         return emailPred.evaluate(with: self)
     }
 }
-
-
 
 // MARK: - Setters
 

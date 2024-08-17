@@ -93,7 +93,6 @@ struct UserModel {
        
        let data = document.data()
        var fetchedDetails: [String: String?] = [
-           "id": userId,
            "firstName": data?["firstName"] as? String,
            "lastName": data?["lastName"] as? String,
            "displayName": data?["displayName"] as? String,
@@ -101,17 +100,15 @@ struct UserModel {
            "workplace": data?["workplace"] as? String,
            "email": data?["email"] as? String,
            "phone": data?["phone"] as? String,
-           "profilePictureURL": data?["profile_picture"] as? String ?? Constants.defaultProfileImageURL
+           "profilePictureURL": data?["profile_picture"] as? String,
+           "theme": data?["theme"] as? String
        ]
        
        // sets the card's display name to the user's full name as a default
        if fetchedDetails["displayName"] == nil {
            if let firstName = fetchedDetails["firstName"] as? String, let lastName = fetchedDetails["lastName"] as? String {
                fetchedDetails["displayName"] = firstName + " " + lastName
-           } else {
-               // to avoid messing up the UI, a default display name is given in an edge scenario
-               fetchedDetails["displayName"] = "(unknown)"
-           }
+           } 
        }
         
         return fetchedDetails

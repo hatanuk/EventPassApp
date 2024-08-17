@@ -12,6 +12,7 @@ import CoreBluetooth
 class BLEViewModel: NSObject, ObservableObject {
     private var centralManager: CBCentralManager!
     private var peripheralManager: CBPeripheralManager!
+    
     // this stores detected devices
     var peripherals: [CBPeripheral] = []
     

@@ -7,15 +7,10 @@
 
 import SwiftUI
 
-enum FocusedField {
-    case firstName
-    case lastName
-    case email
-    case password
-    case passwordRepeat
-   }
+
 
 struct SignUpView: View {
+    
     
     @EnvironmentObject var viewModel: AuthViewModel
     
@@ -28,8 +23,15 @@ struct SignUpView: View {
         return viewModel.acceptedTerms && viewModel.allPropertiesFilled()
     }
     
+    enum FocusedField {
+        case firstName
+        case lastName
+        case email
+        case password
+        case passwordRepeat
+    }
     
-    
+
     @Environment(\.presentationMode) var presentationMode
     
     

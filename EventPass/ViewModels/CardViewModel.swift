@@ -11,26 +11,33 @@ import Combine
 import Firebase
 
 class CardViewModel: ObservableObject {
-    @Published var cardProfile: CardProfile
+    
+    @Published var id: String = ""
+    @Published var displayName: String = ""
+    @Published var title: String = ""
+    @Published var workplace: String = ""
+    @Published var email: String = ""
+    @Published var phone: String = ""
+    @Published var profilePictureURL: String = ""
+    @Published var theme: ColorThemes = Constants.defaultColorTheme
+    
+    
 
     private var db = Firestore.firestore()
     
-        
-    init(businessCard: CardProfile) {
-        self.cardProfile = businessCard
-    }
+ 
     
     func save() {
         let cardData: [String: Any] = [
-            "name": cardProfile.displayName ?? "",
-            "workplace": cardProfile.workplace ?? "",
-            "title": cardProfile.title ?? "",
-            "email": cardProfile.email ?? "",
-            "phone": cardProfile.phone ?? "",
-            "profile_picture": cardProfile.profilePictureURL ?? ""
+            "name": displayName,
+            "workplace": workplace,
+            "title": title,
+            "email": email,
+            "phone": phone,
+            "profile_picture": profilePictureURL
         ]
         
-        db.collection("businessCards").document(cardProfile.id).setData(cardData) { error in
+        db.collection("businessCards").document(id).setData(cardData) { error in
             if let error = error {
                 print("Error saving card profile: \(error.localizedDescription)")
             } else {

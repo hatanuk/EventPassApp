@@ -9,6 +9,7 @@ import Foundation
 import SwiftData
 
 
+
 struct CardProfile {
     
     let model = UserModel()
@@ -18,20 +19,42 @@ struct CardProfile {
     var title: String? = ""
     var workplace: String? = ""
     var email: String? = ""
-    var phone: String? = "''"
+    var phone: String? = ""
     var profilePictureURL: String? = ""
+    var theme: ColorThemes = Constants.defaultColorTheme
     
-    init(fromUserId userId: String) async {
+    init(fromUserId userId: String) async throws {
         self.id = userId
         
         do {
             let queryResult = try await model.fetchUserDetails(userId: userId)
-        } catch DatabaseError.documentNotFound {
-            print("User not found")
+            displayName = queryResult["displayName"] ?? "(unknown)"
+            title = queryResult["title"] ?? ""
+            workplace = queryResult["workplace"] ?? ""
+            email = queryResult["email"] ?? ""
+            phone = queryResult["phone"] ?? ""
+            profilePictureURL = queryResult["profilePictureURL"] ?? Constants.defaultProfileImageURL
+            if let themeResult = queryResult["theme"], let themeString = themeResult {
+                theme = toThemeEnum(fromString: themeString)
+            }
+            
         } catch {
-            print("Error: \(error.localizedDescription)")
+            throw error
         }
         
+    }
+    
+    private func toThemeEnum(fromString theme: String) -> ColorThemes {
+        return switch theme {
+        case "midnight":
+            ColorThemes.midnight
+        case "coolBlue":
+            ColorThemes.coolBlue
+        case "sunset":
+            ColorThemes.sunset
+        default:
+            Constants.defaultColorTheme
+        }
     }
     
     init(id: String,

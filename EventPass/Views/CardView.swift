@@ -7,36 +7,36 @@
 
 import SwiftUI
 
-struct CardView: View {
-    var profile: CardProfile
+enum ColorThemes {
+    case midnight
+    case sunset
+    case coolBlue
     
-    enum ColorThemes {
-        case midnight
-        case sunset
-        case coolBlue
-        
-        var gradientColors: [Color] {
-            switch self {
-            case .coolBlue:
-                return [.blue, .cyan]
-            case .midnight:
-                return [.black, .blue]
-            case .sunset:
-                return [.red, .orange]
-            }
-        }
-        
-        var textColor: Color {
-            switch self {
-            case .coolBlue:
-                return .white
-            case .midnight:
-                return .white
-            case .sunset:
-                return .white
-            }
+    var gradientColors: [Color] {
+        switch self {
+        case .coolBlue:
+            return [.blue, .cyan]
+        case .midnight:
+            return [.black, .blue]
+        case .sunset:
+            return [.red, .orange]
         }
     }
+    
+    var textColor: Color {
+        switch self {
+        case .coolBlue:
+            return .white
+        case .midnight:
+            return .white
+        case .sunset:
+            return .white
+        }
+    }
+}
+
+struct CardView: View {
+    var profile: CardProfile
     
     
     @State var theme: ColorThemes = .coolBlue

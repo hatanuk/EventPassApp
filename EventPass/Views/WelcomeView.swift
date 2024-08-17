@@ -32,6 +32,7 @@ struct WelcomeView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
             .navigationBarItems(trailing: HelpIconView)
+            .navigationBarItems(leading: CardIconView)
             .sheet(isPresented: $showHelp) {
                 HelpView
             }
@@ -66,6 +67,18 @@ struct WelcomeView: View {
         }
         .padding()
     }
+    
+    var CardIconView: some View {
+        Button(action: {
+            showHelp.toggle()
+        }) {
+            Image(systemName: "person.text.rectangle.fill")
+                .font(.title)
+                .foregroundColor(.blue)
+        }
+        .padding()
+    }
+    
     
     var FlavorTextView: some View {
         VStack(spacing: 20) {
@@ -124,7 +137,7 @@ struct WelcomeView: View {
                 return AnyView(LoggedInOptions)
             }
         }
-        return AnyView(LoggedInOptions)
+        return AnyView(NoLoginOptions)
         
     }
     

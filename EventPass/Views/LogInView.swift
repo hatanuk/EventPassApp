@@ -22,26 +22,28 @@ struct LogInView: View {
     
     @Environment(\.presentationMode) var presentationMode
     
+    enum FocusedField {
+        case firstName
+        case lastName
+        case email
+        case password
+        case passwordRepeat
+    }
+    
     
     var body: some View {
        
         NavigationStack {
             VStack {
-      
-               
                 InputElement("Email", binding: $viewModel.email, maxChar: 50)
                     .focused($focusedField, equals: .email)
                 InputElement("Password", binding: $viewModel.password, maxChar: 100, secure: true)
                     .focused($focusedField, equals: .password)
                     .padding(.bottom, -30)
-                
- 
                 ConfirmButtonView
                     .padding(.vertical, 40)
                 ForgotPasswordButton
-                
-                    
-               
+                    .scaleEffect(1.2)
             }
             .padding()
             .alert(viewModel.errorMessage, isPresented: $errorShown) {
