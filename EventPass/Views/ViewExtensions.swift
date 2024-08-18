@@ -35,4 +35,24 @@ extension View {
         .padding(.bottom, 50)
 
     }
+    
+    // Toolbar item that dismisses the current view
+    func ToolbarCancelView(_ presentationMode: Binding<PresentationMode>) -> some View {
+        Button(action: {
+            presentationMode.wrappedValue.dismiss()
+        }) {
+            Image(systemName: "xmark.circle")
+                .font(.title)
+                .padding()
+                .foregroundColor(.red)
+        }
+    }
+    
+    func ToolbarTitleView(_ title: String, size: CGFloat = 40) -> some View {
+        Text(title)
+            .font(.system(size: size, weight: .bold, design: .default))
+            .foregroundColor(.primary)
+            
+    }
+
 }

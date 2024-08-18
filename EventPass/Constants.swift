@@ -14,7 +14,17 @@ struct Constants {
     
     static let testProfile = CardProfile(
         id: "1",
-        displayName: "John Smitherson the Third",
+        displayName: "John Smitherson the third",
+        title: "Software Engineer",
+        workplace: "Tech Company",
+        email: "john.doe@example.com",
+        phone: "+1234567890",
+        profilePictureURL: Constants.defaultProfileImageURL
+    )
+    
+    static let testProfile2 = CardProfile(
+        id: "1",
+        displayName: "John Smith",
         title: "Software Engineer",
         workplace: "Tech Company",
         email: "john.doe@example.com",

@@ -67,8 +67,8 @@ struct LogInView: View {
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .principal) {ToolbarTitleView}
-            ToolbarItem(placement: .navigationBarTrailing) {ToolbarCancelView}
+            ToolbarItem(placement: .principal) {ToolbarTitleView("Log in")}
+            ToolbarItem(placement: .navigationBarTrailing) {ToolbarCancelView(presentationMode)}
            
         }
         .sheet(isPresented: $showForgotPassword) {
@@ -126,23 +126,7 @@ struct LogInView: View {
         .disabled(!canConfirm)
 
     }
-    
-    var ToolbarTitleView: some View {
-        Text("Log In")
-            .font(.system(size: 40))
-
-    }
-    
-    var ToolbarCancelView: some View {
-        Button(action: {
-            presentationMode.wrappedValue.dismiss()
-        }) {
-            Image(systemName: "xmark.circle")
-                .font(.title)
-                .padding()
-                .foregroundColor(.red)
-        }
-    }
+        
 }
 
 
