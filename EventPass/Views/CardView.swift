@@ -61,9 +61,7 @@ struct CardView: View {
     @State var theme: ColorThemes = .coolBlue
     
     var body: some View {
-        GeometryReader { geometry in
-            let cardWidth = geometry.size.width * 0.9
-            let cardHeight = cardWidth / 1.6
+      
 
             VStack {
                 cardHeader()
@@ -72,11 +70,11 @@ struct CardView: View {
                 cardFooter()
             }
             .padding()
-            .frame(width: cardWidth, height: cardHeight)
+            .frame(width: 350, height: 200)
             .background(LinearGradient(colors: theme.gradientColors, startPoint: .top, endPoint: .bottomTrailing))
             .cornerRadius(10)
             .shadow(radius: 10)
-        }
+        
     }
     
     // MARK: - Subviews
@@ -84,7 +82,9 @@ struct CardView: View {
     @ViewBuilder
     private func cardHeader() -> some View {
         HStack(spacing: 12) {
-            if let urlString = profile.profilePictureURL, let url = URL(string: urlString) {
+            
+            let urlString = profile.profilePictureURL ?? Constants.defaultProfileImageURL
+            if let url = URL(string: urlString) {
                AsyncImage(url: url) { image in
                    image
                        .resizable()
@@ -106,14 +106,13 @@ struct CardView: View {
     
     private func profileDetails() -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            if let displayName = profile.displayName {
-                Text(displayName)
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(theme.textColor)
-                    .minimumScaleFactor(0.8)
-                    .lineLimit(1)
-            }
+            let displayName = profile.displayName ?? "John Smith"
+            Text(displayName)
+                .font(.title2)
+                .fontWeight(.bold)
+                .foregroundColor(theme.textColor)
+                .minimumScaleFactor(0.8)
+                .lineLimit(1)
             
             if let title = profile.title {
                 Text(title)

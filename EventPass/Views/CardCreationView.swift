@@ -13,6 +13,14 @@ struct CardCreationView: View {
     @StateObject var viewModel = CardViewModel()
     @FocusState private var focusedField: FocusedField?
     @Environment(\.presentationMode) var presentationMode
+    
+    var fullName: String {
+        authViewModel.firstName + " " + authViewModel.lastName
+    }
+    
+    @State var errorShown = false
+    
+    @State var testText: String = "hi"
 
     enum FocusedField {
         case title
@@ -25,8 +33,10 @@ struct CardCreationView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 20) {
+                
+                Text(testText)
     
-                businessCardPreview()
+                cardPreview()
 
                 cardEditFields()
 
@@ -35,6 +45,16 @@ struct CardCreationView: View {
         }
         .onAppear(perform: handleOnAppear)
         .onSubmit(handleOnSubmit)
+        .alert(viewModel.errorMessage, isPresented: $errorShown) {
+            Button("OK", role: .cancel) {
+                viewModel.errorMessage = ""
+            }
+        }
+        .onChange(of: viewModel.errorMessage) {
+            if viewModel.errorMessage.count > 0 {
+                errorShown = false
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .principal) {
                 ToolbarTitleView("Edit Business Card", size: 30)
@@ -47,22 +67,26 @@ struct CardCreationView: View {
     
     // MARK: - Subviews
     
-    private func businessCardPreview() -> some View {
-        CardView(profile: Constants.testProfile)
+    private func cardPreview() -> some View {
+        CardView(profile: viewModel.card)
+        
     }
     
     private func cardEditFields() -> some View {
         Form {
-            ForEach(0..<3) { _ in
-                Section("Specify a title:") {
-                    TextField("", text: $viewModel.title)
-                        .focused($focusedField, equals: .title)
-                }
+            
+            Section("Specify a display name:") {
+                TextField(fullName, text: $viewModel.displayName)
+                    .focused($focusedField, equals: .title)
+            }
+            Section("Specify a title:") {
+                TextField("", text: $viewModel.title)
+                    .focused($focusedField, equals: .title)
+            }
 
-                Section("Specify a workplace:") {
-                    TextField("", text: $viewModel.workplace)
-                        .focused($focusedField, equals: .workplace)
-                }
+            Section("Specify a workplace:") {
+                TextField("", text: $viewModel.workplace)
+                    .focused($focusedField, equals: .workplace)
             }
         }
     }
@@ -96,6 +120,14 @@ struct CardCreationView: View {
             // user account is not found, must be an error
             presentationMode.wrappedValue.dismiss()
         }
+        Task {
+            if (await viewModel.load()) {
+                testText = "Card Loaded"
+            } else {
+                testText = "Card not loaded"
+            }
+        }
+        
     }
     
     private func handleOnSubmit() {

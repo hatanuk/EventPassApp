@@ -109,6 +109,9 @@ extension AuthViewModel {
     
     func signUpEmailPassword() async -> Bool {
         
+        let currentFirstName = firstName
+        let currentLastName = lastName
+        
         // Sign up is accomplished by linking a mandatory anonymous account with a username-password credential.
         // Users should be signed in anonymously during launch but perform this check either way
         guard let user = user else {
@@ -130,6 +133,7 @@ extension AuthViewModel {
             
             let authResult = try await UserService.signUp(email: email, password: password, user: user)
             await updateUser(to: authResult.user)
+            try await saveNewUserDetails(userId: user.uid, firstName: currentFirstName, lastName: currentLastName)
             print("SIGNUP FROM: \(authResult.user.uid)")
             return true
             
@@ -223,6 +227,13 @@ extension AuthViewModel {
             }
 
         }
+    }
+    
+    // MARK: Helper functions
+    
+    private func saveNewUserDetails(userId: String, firstName: String, lastName: String) async throws {
+        let newUser = CardProfile(id: userId, firstName: firstName, lastName: lastName)
+        try await UserService.saveUserDetails(fromCard: newUser)
     }
 
 }

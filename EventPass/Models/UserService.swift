@@ -79,7 +79,7 @@ class UserService {
         }
     }
     
-    //MARK: - Database Operations
+    //MARK: - Firebase Operations
     
     
     static func fetchUserDetails(userId: String) async throws -> [String: String?] {
@@ -97,7 +97,7 @@ class UserService {
        }
        
        let data = document.data()
-       var fetchedDetails: [String: String?] = [
+       let fetchedDetails: [String: String?] = [
            "displayName": data?["displayName"] as? String,
            "title": data?["title"] as? String,
            "workplace": data?["workplace"] as? String,

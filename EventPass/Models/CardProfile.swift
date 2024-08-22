@@ -7,15 +7,18 @@
 
 import Foundation
 import SwiftData
+import FirebaseFirestore
 
 
 
 struct CardProfile {
     
-    /// Mandatory properties
+    // Mandatory properties
     let id: String
     
-    /// Optional properties
+    // Optional properties
+    var firstName: String? = ""
+    var lastName: String? = ""
     var displayName: String? = ""
     var title: String? = ""
     var workplace: String? = ""
@@ -29,7 +32,9 @@ struct CardProfile {
         
         do {
             let queryResult = try await UserService.fetchUserDetails(userId: userId)
-            displayName = queryResult["displayName"] ?? "(unknown)"
+            firstName = queryResult["firstName"] ?? ""
+            lastName = queryResult["lastName"] ?? ""
+            displayName = queryResult["displayName"] ?? ""
             title = queryResult["title"] ?? ""
             workplace = queryResult["workplace"] ?? ""
             email = queryResult["email"] ?? ""
@@ -46,6 +51,8 @@ struct CardProfile {
     }
     
     init(id: String,
+             firstName: String? = nil,
+             lastName: String? = nil,
              displayName: String? = nil,
              title: String? = nil,
              workplace: String? = nil,
@@ -54,6 +61,8 @@ struct CardProfile {
              profilePictureURL: String? = nil,
              theme: ColorThemes = Constants.defaultColorTheme) {
             self.id = id
+            self.firstName = firstName
+            self.lastName = lastName
             self.displayName = displayName
             self.title = title
             self.workplace = workplace
