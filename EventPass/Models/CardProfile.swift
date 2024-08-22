@@ -12,9 +12,10 @@ import SwiftData
 
 struct CardProfile {
     
-    let model = UserModel()
-    
+    /// Mandatory properties
     let id: String
+    
+    /// Optional properties
     var displayName: String? = ""
     var title: String? = ""
     var workplace: String? = ""
@@ -27,7 +28,7 @@ struct CardProfile {
         self.id = userId
         
         do {
-            let queryResult = try await model.fetchUserDetails(userId: userId)
+            let queryResult = try await UserService.fetchUserDetails(userId: userId)
             displayName = queryResult["displayName"] ?? "(unknown)"
             title = queryResult["title"] ?? ""
             workplace = queryResult["workplace"] ?? ""
@@ -35,7 +36,7 @@ struct CardProfile {
             phone = queryResult["phone"] ?? ""
             profilePictureURL = queryResult["profilePictureURL"] ?? Constants.defaultProfileImageURL
             if let themeResult = queryResult["theme"], let themeString = themeResult {
-                theme = toThemeEnum(fromString: themeString)
+                theme = ColorThemes(id: Int(themeString) ?? 0)
             }
             
         } catch {
@@ -44,26 +45,14 @@ struct CardProfile {
         
     }
     
-    private func toThemeEnum(fromString theme: String) -> ColorThemes {
-        return switch theme {
-        case "midnight":
-            ColorThemes.midnight
-        case "coolBlue":
-            ColorThemes.coolBlue
-        case "sunset":
-            ColorThemes.sunset
-        default:
-            Constants.defaultColorTheme
-        }
-    }
-    
     init(id: String,
              displayName: String? = nil,
              title: String? = nil,
              workplace: String? = nil,
              email: String? = nil,
              phone: String? = nil,
-             profilePictureURL: String? = nil) {
+             profilePictureURL: String? = nil,
+             theme: ColorThemes = Constants.defaultColorTheme) {
             self.id = id
             self.displayName = displayName
             self.title = title
@@ -71,6 +60,7 @@ struct CardProfile {
             self.email = email
             self.phone = phone
             self.profilePictureURL = profilePictureURL
+            self.theme = theme
         }
     
 

@@ -69,7 +69,9 @@ struct CardCreationView: View {
     
     private func saveButton() -> some View {
         Button(action: {
-            viewModel.save()
+            Task {
+                await viewModel.save()
+            }
             focusedField = nil
         }) {
             Text("Save")

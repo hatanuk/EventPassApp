@@ -12,6 +12,8 @@ import Firebase
 
 class CardViewModel: ObservableObject {
     
+    @Published var errorMessage = ""
+    
     @Published var id: String = ""
     @Published var displayName: String = ""
     @Published var title: String = ""
@@ -20,30 +22,47 @@ class CardViewModel: ObservableObject {
     @Published var phone: String = ""
     @Published var profilePictureURL: String = ""
     @Published var theme: ColorThemes = Constants.defaultColorTheme
+    @EnvironmentObject var authViewModel: AuthViewModel
     
-    
-
-    private var db = Firestore.firestore()
     
  
     
-    func save() {
-        let cardData: [String: Any] = [
-            "name": displayName,
-            "workplace": workplace,
-            "title": title,
-            "email": email,
-            "phone": phone,
-            "profile_picture": profilePictureURL
-        ]
-        
-        db.collection("businessCards").document(id).setData(cardData) { error in
-            if let error = error {
-                print("Error saving card profile: \(error.localizedDescription)")
-            } else {
-                print("Card profile saved successfully.")
-            }
+    func save() async -> Bool {
+        let card = CardProfile(id: id,
+                           displayName: displayName,
+                           title: title,
+                           workplace: workplace,
+                           email: email,
+                           phone: phone,
+                           profilePictureURL: profilePictureURL,
+                           theme: theme)
+        do {
+            try await UserService.saveUserDetails(fromCard: card)
+            return true
+        } catch {
+            print(error)
+            errorMessage = error.localizedDescription
+            return false
         }
+        
+    }
+    
+    func load() async -> Bool {
+        
+        guard let id = authViewModel.getUserId() else {
+            errorMessage = "User not authenticated"
+            return false
+        }
+    
+        do {
+            let card = try await CardProfile(fromUserId: id)
+            return true
+        } catch {
+            print(error)
+            errorMessage = error.localizedDescription
+            return false
+        }
+        
     }
         
 }

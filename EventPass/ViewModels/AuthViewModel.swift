@@ -28,7 +28,6 @@ class AuthViewModel: ObservableObject {
     
     // minimum amount of characters for a valid password
     let MIN_PASS_LENGTH = 8
-    
     let defaultErrorMessage = "The operation was unsuccesful, please try again later"
      
     @Published var email: String = ""
@@ -41,8 +40,6 @@ class AuthViewModel: ObservableObject {
     @Published var user: User?
     @Published var authenticationState: AuthenticationState = .unauthenticated
     @Published var authenticationType: AuthenticationType = .withAnonymous
-    
-    private var userModel = UserModel()
     
 }
 
@@ -72,7 +69,7 @@ extension AuthViewModel {
     
     private func signOutSafely() async {
         do {
-            try userModel.signOut()
+            try UserService.signOut()
             await updateUser(to: nil)
         } catch {
             print("ERROR SAFELY SIGNING OUT: \(error)")
@@ -131,7 +128,7 @@ extension AuthViewModel {
             // Validation
             try validateSignUp()
             
-            let authResult = try await userModel.signUp(email: email, password: password, user: user)
+            let authResult = try await UserService.signUp(email: email, password: password, user: user)
             await updateUser(to: authResult.user)
             print("SIGNUP FROM: \(authResult.user.uid)")
             return true
@@ -158,7 +155,7 @@ extension AuthViewModel {
     func signInAnonymously() async -> Bool {
         
         do {
-            let authResult = try await userModel.signInAnonymously()
+            let authResult = try await UserService.signInAnonymously()
             await updateUser(to: authResult.user)
             print("ANONYMOUS LOGIN FROM: \(authResult.user.uid)")
             return true
@@ -180,7 +177,7 @@ extension AuthViewModel {
         
         do {
             await signOutSafely()
-            let authResult = try await userModel.signIn(email: email, password: password)
+            let authResult = try await UserService.signIn(email: email, password: password)
             await updateUser(to: authResult.user)
             print("LOGIN FROM: \(authResult.user.uid)")
             return true

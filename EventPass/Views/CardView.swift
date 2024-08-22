@@ -12,6 +12,19 @@ enum ColorThemes {
     case sunset
     case coolBlue
     
+    init(id: Int) {
+            switch id {
+            case 0:
+                self = .coolBlue
+            case 1:
+                self = .sunset
+            case 2:
+                self = .midnight
+            default:
+                self = Constants.defaultColorTheme
+            }
+        }
+    
     var gradientColors: [Color] {
         switch self {
         case .coolBlue:
@@ -29,6 +42,17 @@ enum ColorThemes {
             return .white
         }
     }
+    
+    var id: Int {
+            switch self {
+            case .coolBlue:
+                return 0
+            case .sunset:
+                return 1
+            case .midnight:
+                return 2
+            }
+        }
 }
 
 
