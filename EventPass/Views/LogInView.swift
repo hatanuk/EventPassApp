@@ -35,7 +35,7 @@ struct LogInView: View {
        
         NavigationStack {
             VStack {
-                InputElement("Email", binding: $viewModel.email, maxChar: 50)
+                InputElement("Email", binding: $viewModel.email, maxChar: 50, keyboardType: .emailAddress)
                     .focused($focusedField, equals: .email)
                 InputElement("Password", binding: $viewModel.password, maxChar: 100, secure: true)
                     .focused($focusedField, equals: .password)

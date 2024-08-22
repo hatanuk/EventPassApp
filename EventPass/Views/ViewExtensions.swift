@@ -11,8 +11,7 @@ import SwiftUI
 extension View {
     
     // This constructs an input element used for user-submitted information such as username, password, etc.
-    func InputElement(_ label: String, binding: Binding<String>, maxChar: Int = 30, secure:
-                      Bool = false) -> some View {
+    func InputElement(_ label: String, binding: Binding<String>, maxChar: Int = 30, keyboardType: UIKeyboardType = .default, secure: Bool = false) -> some View {
         let field = secure ? AnyView(SecureField(label, text: binding)) : AnyView(TextField(label, text: binding))
     
         return field
@@ -31,6 +30,7 @@ extension View {
                 binding.wrappedValue = oldValue
             }
         }
+        .keyboardType(keyboardType)
         .padding(.horizontal, 30)
         .padding(.bottom, 50)
 
@@ -54,5 +54,24 @@ extension View {
             .foregroundColor(.primary)
             
     }
+    
+    @ViewBuilder
+    func formSection(header: String, binding: Binding<String>, maxChar: Int = 30, keyboardType: UIKeyboardType = .default, numeric: Bool = false) -> some View {
+            Section(header) {
+                TextField("", text: binding)
+                    .onChange(of: binding.wrappedValue) {
+                        var updatedText = binding.wrappedValue
+                        if numeric {
+                            updatedText = binding.wrappedValue.filter { "0123456789".contains($0) }
+                        }
+                        if updatedText.count > maxChar {
+                            binding.wrappedValue = String(updatedText.prefix(maxChar))
+                        } else {
+                            binding.wrappedValue = updatedText
+                        }
+                    }
+                    .keyboardType(keyboardType)
+            }
+        }
 
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import _PhotosUI_SwiftUI
 
 struct CardCreationView: View {
     
@@ -15,7 +16,11 @@ struct CardCreationView: View {
     @Environment(\.presentationMode) var presentationMode
     
     var fullName: String {
-        authViewModel.firstName + " " + authViewModel.lastName
+        if let firstName = viewModel.card.firstName, let lastName = viewModel.card.lastName {
+            return firstName + " " + lastName
+        } else {
+            return ""
+        }
     }
     
     @State var errorShown = false
@@ -23,9 +28,8 @@ struct CardCreationView: View {
     @State var testText: String = "hi"
 
     enum FocusedField {
-        case title
-        case workplace
-    }
+          case displayName, title, workplace, email, phone, theme, photo
+      }
 
     var body: some View {
         ZStack {
@@ -68,33 +72,54 @@ struct CardCreationView: View {
     // MARK: - Subviews
     
     private func cardPreview() -> some View {
-        CardView(profile: viewModel.card)
+        CardView(card: viewModel.card)
         
     }
     
     private func cardEditFields() -> some View {
         Form {
             
-            Section("Specify a display name:") {
-                TextField(fullName, text: $viewModel.displayName)
-                    .focused($focusedField, equals: .title)
-            }
-            Section("Specify a title:") {
-                TextField("", text: $viewModel.title)
-                    .focused($focusedField, equals: .title)
-            }
+            formSection(header: "Specify name on card:", binding: $viewModel.displayName, maxChar: 50)
+                .focused($focusedField, equals: .displayName)
+            formSection(header: "Specify a title:", binding: $viewModel.title, maxChar: 50)
+                .focused($focusedField, equals: .title)
 
-            Section("Specify a workplace:") {
-                TextField("", text: $viewModel.workplace)
-                    .focused($focusedField, equals: .workplace)
-            }
+            formSection(header: "Specify a workplace:", binding: $viewModel.workplace, maxChar: 50)
+                .focused($focusedField, equals: .workplace)
+
+            formSection(header: "Specify a public email:", binding: $viewModel.email, maxChar: 50, keyboardType: .emailAddress)
+                .focused($focusedField, equals: .email)
+
+            formSection(header: "Specify a public phone number:", binding: $viewModel.phone, maxChar: 15, keyboardType: .numberPad, numeric: true)
+                .focused($focusedField, equals: .phone)
+            themePickerSection()
+            
+            
+
         }
     }
     
+    private func themePickerSection() -> some View {
+     
+            return Section("Choose a theme:") {
+                Picker("Theme", selection: $viewModel.theme) {
+                    ForEach(ColorThemes.allCases, id: \.self) { theme in
+                        Text(theme.rawValue.capitalized)
+                    }
+                }
+                .focused($focusedField, equals: .theme)
+            }
+        
+       }
+       
+      
+    
     private func saveButton() -> some View {
         Button(action: {
-            Task {
-                await viewModel.save()
+            if viewModel.validateInputs() {
+                Task {
+                    await viewModel.save()
+                }
             }
             focusedField = nil
         }) {
@@ -132,12 +157,13 @@ struct CardCreationView: View {
     
     private func handleOnSubmit() {
         switch focusedField {
-        case .title:
-            focusedField = .workplace
-        case .workplace:
-            focusedField = nil
-        default:
-            focusedField = .title
+        case .displayName: focusedField = .title
+        case .title: focusedField = .workplace
+        case .workplace: focusedField = .email
+        case .email: focusedField = .phone
+        case .phone: focusedField = .theme
+        case .theme: focusedField = nil
+        default: focusedField = .displayName
         }
     }
 }

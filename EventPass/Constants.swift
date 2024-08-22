@@ -12,13 +12,15 @@ struct Constants {
     
     static let defaultColorTheme = ColorThemes.coolBlue
     
+    static let unspecifiedDisplayName = "Your name"
+    
     static let testProfile = CardProfile(
         id: "1",
         displayName: "John Smitherson the third",
         title: "Software Engineer",
         workplace: "Tech Company",
         email: "john.doe@example.com",
-        phone: "+1234567890",
+        phone: "1234567890",
         profilePictureURL: Constants.defaultProfileImageURL
     )
     
@@ -28,7 +30,7 @@ struct Constants {
         title: "Software Engineer",
         workplace: "Tech Company",
         email: "john.doe@example.com",
-        phone: "+1234567890",
+        phone: "1234567890",
         profilePictureURL: Constants.defaultProfileImageURL
     )
     

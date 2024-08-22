@@ -23,6 +23,7 @@
 		5F82AD9A2C67BFCC00C6FF61 /* LogInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F82AD992C67BFCC00C6FF61 /* LogInView.swift */; };
 		5F82AD9C2C67BFEB00C6FF61 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F82AD9B2C67BFEB00C6FF61 /* ViewExtensions.swift */; };
 		5F82AD9E2C6A1E9100C6FF61 /* CardCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F82AD9D2C6A1E9100C6FF61 /* CardCreationView.swift */; };
+		5F82ADA12C77612D00C6FF61 /* PhoneNumberKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5F82ADA02C77612D00C6FF61 /* PhoneNumberKit */; };
 		5FBEA2EC2C287D8700FA185D /* BLEViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBEA2EB2C287D8700FA185D /* BLEViewModel.swift */; };
 		5FBEA2F12C28857F00FA185D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBEA2F02C28857F00FA185D /* Constants.swift */; };
 		5FBEA2F62C551F2E00FA185D /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBEA2F52C551F2E00FA185D /* SplashScreenView.swift */; };
@@ -104,6 +105,7 @@
 				5FCB9D522C0DEAF9001172BD /* FirebaseAnalytics in Frameworks */,
 				5FCB9D582C0DEAF9001172BD /* FirebaseCrashlytics in Frameworks */,
 				5FCB9D562C0DEAF9001172BD /* FirebaseAuth in Frameworks */,
+				5F82ADA12C77612D00C6FF61 /* PhoneNumberKit in Frameworks */,
 				5FCB9D5A2C0DEAF9001172BD /* FirebaseFirestore in Frameworks */,
 				5FCB9D542C0DEAF9001172BD /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
 			);
@@ -282,6 +284,7 @@
 				5FCB9D552C0DEAF9001172BD /* FirebaseAuth */,
 				5FCB9D572C0DEAF9001172BD /* FirebaseCrashlytics */,
 				5FCB9D592C0DEAF9001172BD /* FirebaseFirestore */,
+				5F82ADA02C77612D00C6FF61 /* PhoneNumberKit */,
 			);
 			productName = EventPass;
 			productReference = 5FCB9D1D2C0DE82A001172BD /* EventPass.app */;
@@ -357,6 +360,7 @@
 			mainGroup = 5FCB9D142C0DE82A001172BD;
 			packageReferences = (
 				5FCB9D502C0DEAF9001172BD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				5F82AD9F2C77612D00C6FF61 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */,
 			);
 			productRefGroup = 5FCB9D1E2C0DE82A001172BD /* Products */;
 			projectDirPath = "";
@@ -756,6 +760,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5F82AD9F2C77612D00C6FF61 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/PhoneNumberKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
 		5FCB9D502C0DEAF9001172BD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -767,6 +779,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5F82ADA02C77612D00C6FF61 /* PhoneNumberKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5F82AD9F2C77612D00C6FF61 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */;
+			productName = PhoneNumberKit;
+		};
 		5FCB9D512C0DEAF9001172BD /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5FCB9D502C0DEAF9001172BD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

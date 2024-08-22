@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import PhoneNumberKit
 
-enum ColorThemes {
+
+enum ColorThemes: String, CaseIterable {
     case midnight
     case sunset
     case coolBlue
@@ -57,21 +59,21 @@ enum ColorThemes {
 
 
 struct CardView: View {
-    var profile: CardProfile
-    @State var theme: ColorThemes = .coolBlue
+    var card: CardProfile
+
     
     var body: some View {
       
 
             VStack {
                 cardHeader()
-                Divider().background(theme.textColor)
+                Divider().background(card.theme.textColor)
                     .padding(.bottom, 8)
                 cardFooter()
             }
             .padding()
             .frame(width: 350, height: 200)
-            .background(LinearGradient(colors: theme.gradientColors, startPoint: .top, endPoint: .bottomTrailing))
+            .background(LinearGradient(colors: card.theme.gradientColors, startPoint: .top, endPoint: .bottomTrailing))
             .cornerRadius(10)
             .shadow(radius: 10)
         
@@ -83,7 +85,7 @@ struct CardView: View {
     private func cardHeader() -> some View {
         HStack(spacing: 12) {
             
-            let urlString = profile.profilePictureURL ?? Constants.defaultProfileImageURL
+            let urlString = card.profilePictureURL ?? Constants.defaultProfileImageURL
             if let url = URL(string: urlString) {
                AsyncImage(url: url) { image in
                    image
@@ -105,51 +107,65 @@ struct CardView: View {
     
     
     private func profileDetails() -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            let displayName = profile.displayName ?? "John Smith"
+        
+        // In case displayName is not defined, either use
+        // the user's firstName + lastName, or a default
+        var fallback: String
+        if let firstName = card.firstName, let lastName = card.lastName {
+            fallback = firstName + " " + lastName
+        } else {
+            fallback = Constants.unspecifiedDisplayName
+        }
+        
+        return VStack(alignment: .leading, spacing: 10) {
+            
+            let displayName = card.displayName ?? fallback
             Text(displayName)
                 .font(.title2)
                 .fontWeight(.bold)
-                .foregroundColor(theme.textColor)
+                .foregroundColor(card.theme.textColor)
                 .minimumScaleFactor(0.8)
                 .lineLimit(1)
             
-            if let title = profile.title {
+            if let title = card.title {
                 Text(title)
                     .font(.subheadline)
-                    .foregroundColor(theme.textColor)
+                    .foregroundColor(card.theme.textColor)
                     .lineLimit(1)
             }
             
-            if let workplace = profile.workplace {
+            if let workplace = card.workplace {
                 Text(workplace)
                     .font(.subheadline)
-                    .foregroundColor(theme.textColor)
+                    .foregroundColor(card.theme.textColor)
                     .lineLimit(1)
             }
         }
     }
     
     private func cardFooter() -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            if let email = profile.email {
+        // Phone number parsing using PhoneNumberKit
+            
+        return VStack(alignment: .leading, spacing: 4) {
+            if let email = card.email {
                 HStack {
                     Image(systemName: "envelope")
                     Text(email)
                         .lineLimit(1)
                 }
                 .font(.subheadline)
-                .foregroundColor(theme.textColor)
+                .foregroundColor(card.theme.textColor)
             }
             
-            if let phone = profile.phone {
+            if let phone = card.phone {
+                
                 HStack {
                     Image(systemName: "phone")
-                    Text(phone)
+                    Text(PartialFormatter().formatPartial("+" + phone) )
                         .lineLimit(1)
                 }
                 .font(.subheadline)
-                .foregroundColor(theme.textColor)
+                .foregroundColor(card.theme.textColor)
             }
         }
     }
@@ -157,8 +173,8 @@ struct CardView: View {
 
 #Preview {
     VStack {
-        CardView(profile: Constants.testProfile)
-        CardView(profile: Constants.testProfile2)
+        CardView(card: Constants.testProfile)
+        CardView(card: Constants.testProfile2)
     }
    
 }
