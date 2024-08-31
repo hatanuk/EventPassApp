@@ -69,9 +69,7 @@ struct WelcomeView: View {
     }
     
     var CardIconView: some View {
-        Button(action: {
-            showHelp.toggle()
-        }) {
+        NavigationLink(destination: CardCreationView()) {
             Image(systemName: "person.text.rectangle.fill")
                 .font(.title)
                 .foregroundColor(.blue)

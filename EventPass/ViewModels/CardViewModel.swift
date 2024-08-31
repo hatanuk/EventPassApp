@@ -12,7 +12,7 @@ import Firebase
 import PhoneNumberKit
 
 class CardViewModel: ObservableObject {
-    
+        
     @Published var errorMessage = ""
     
     // observers are used to update the card instance with the changed details
@@ -60,65 +60,86 @@ class CardViewModel: ObservableObject {
         )
     }
     
-    func validateInputs() -> Bool {
+    func validateInputs() async -> Bool {
+        let optionals = [displayName, title, workplace, email, phone, profilePictureURL]
         
-        if !email.isEmpty && !email.isValidEmail {
-            errorMessage = "Please make sure the email is valid"
-            return false
-        } else if !phone.isEmpty && !phone.isValidPhoneNumber {
-            errorMessage = "Please make sure the phone number is valid"
-            return false
+        return await MainActor.run {
+        
+            if (optionals.allSatisfy { $0.isEmpty }) {
+                    errorMessage = "Please fill in at least one field"
+                    return false
+                }
+            
+            if !email.isEmpty && !email.isValidEmail {
+                errorMessage = "Please make sure the email is valid"
+                return false
+            } else if !phone.isEmpty && !phone.isValidPhoneNumber {
+                errorMessage = "Please make sure the phone number is valid"
+                return false
+            }
+    
+            return true
         }
-        return true
     }
  
     // MARK: Firebase Operations
     
     func save() async -> Bool {
+            
         let card = CardProfile(id: id,
-                           displayName: displayName,
-                           title: title,
-                           workplace: workplace,
-                           email: email,
-                           phone: phone,
-                           profilePictureURL: profilePictureURL,
-                           theme: theme)
+                               displayName: displayName,
+                               title: title,
+                               workplace: workplace,
+                               email: email,
+                               phone: phone,
+                               profilePictureURL: profilePictureURL,
+                               theme: theme)
         do {
             try await UserService.saveUserDetails(fromCard: card)
             return true
         } catch {
-            print(error)
-            errorMessage = error.localizedDescription
-            return false
+            return await MainActor.run {
+                print(error)
+                errorMessage = error.localizedDescription
+                return false
+            }
         }
         
     }
     
     func load() async -> Bool {
         
+        
+        
         guard id != "" else {
-            errorMessage = "User not authenticated"
+            await MainActor.run {
+                errorMessage = "User not authenticated"
+            }
             return false
         }
     
         do {
             let card = try await CardProfile(fromUserId: id)
-            self.id = card.id
-            self.displayName = card.displayName ?? ""
-            self.title = card.title ?? ""
-            self.workplace = card.workplace ?? ""
-            self.email = card.email ?? ""
-            self.phone = card.phone ?? ""
-            self.profilePictureURL = card.profilePictureURL ?? ""
-            self.theme = card.theme
-            self.card = card
+            await MainActor.run {
+                self.id = card.id
+                self.displayName = card.displayName ?? ""
+                self.title = card.title ?? ""
+                self.workplace = card.workplace ?? ""
+                self.email = card.email ?? ""
+                self.phone = card.phone ?? ""
+                self.profilePictureURL = card.profilePictureURL ?? ""
+                self.theme = card.theme
+                self.card = card
+            }
             return true
         } catch FirestoreErrorCode.notFound {
             // user does not yet have a saved card, no worries
             return false
         } catch {
             print(error)
-            errorMessage = error.localizedDescription
+            await MainActor.run {
+                errorMessage = error.localizedDescription
+            }
             return false
         }
         

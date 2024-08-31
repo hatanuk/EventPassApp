@@ -32,14 +32,15 @@ struct CardProfile {
         
         do {
             let queryResult = try await UserService.fetchUserDetails(userId: userId)
-            firstName = queryResult["firstName"] ?? ""
-            lastName = queryResult["lastName"] ?? ""
-            displayName = queryResult["displayName"] ?? ""
-            title = queryResult["title"] ?? ""
-            workplace = queryResult["workplace"] ?? ""
-            email = queryResult["email"] ?? ""
-            phone = queryResult["phone"] ?? ""
-            profilePictureURL = queryResult["profilePictureURL"] ?? Constants.defaultProfileImageURL
+            firstName = nilIfEmpty(queryResult["firstName"] ?? nil)
+            lastName = nilIfEmpty(queryResult["lastName"] ?? nil)
+            displayName = nilIfEmpty(queryResult["displayName"] ?? nil)
+            title = nilIfEmpty(queryResult["title"] ?? nil)
+            workplace = nilIfEmpty(queryResult["workplace"] ?? nil)
+            email = nilIfEmpty(queryResult["email"] ?? nil)
+            phone = nilIfEmpty(queryResult["phone"] ?? nil)
+            profilePictureURL = nilIfEmpty(queryResult["profilePictureURL"] ?? nil) ?? Constants.defaultProfileImageURL
+            
             if let themeResult = queryResult["theme"], let themeString = themeResult {
                 theme = ColorThemes(id: Int(themeString) ?? 0)
             }
@@ -71,6 +72,11 @@ struct CardProfile {
             self.profilePictureURL = profilePictureURL
             self.theme = theme
         }
+    
+    func nilIfEmpty(_ value: String?) -> String? {
+        guard let value = value, !value.isEmpty else { return nil }
+        return value
+    }
     
 
     

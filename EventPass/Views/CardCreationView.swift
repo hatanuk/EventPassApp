@@ -24,8 +24,7 @@ struct CardCreationView: View {
     }
     
     @State var errorShown = false
-    
-    @State var testText: String = "hi"
+
 
     enum FocusedField {
           case displayName, title, workplace, email, phone, theme, photo
@@ -37,8 +36,6 @@ struct CardCreationView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 20) {
-                
-                Text(testText)
     
                 cardPreview()
 
@@ -62,9 +59,6 @@ struct CardCreationView: View {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 ToolbarTitleView("Edit Business Card", size: 30)
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                ToolbarCancelView(presentationMode)
             }
         }
     }
@@ -116,12 +110,17 @@ struct CardCreationView: View {
     
     private func saveButton() -> some View {
         Button(action: {
-            if viewModel.validateInputs() {
-                Task {
+            Task {
+                focusedField = nil
+                if await viewModel.validateInputs() {
                     await viewModel.save()
+                    await MainActor.run {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                } else {
+                    errorShown = true
                 }
             }
-            focusedField = nil
         }) {
             Text("Save")
                 .frame(maxWidth: .infinity)
@@ -146,11 +145,7 @@ struct CardCreationView: View {
             presentationMode.wrappedValue.dismiss()
         }
         Task {
-            if (await viewModel.load()) {
-                testText = "Card Loaded"
-            } else {
-                testText = "Card not loaded"
-            }
+            await viewModel.load()
         }
         
     }
