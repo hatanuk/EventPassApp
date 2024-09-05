@@ -21,7 +21,7 @@ Currently, the app supports creation of business cards as well as account functi
 ```bash
 $ git clone https://github.com/hatanuk/EventPassApp
 ```
-## Navigate to the project folder:
+### Navigate to the project folder:
 ```bash
 cd <project-folder>
 ```
