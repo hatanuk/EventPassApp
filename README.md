@@ -19,7 +19,7 @@ Currently, the app supports creation of business cards as well as account functi
 
 ### Clone the Repo:
 ```bash
-$ git clone https://github.com/hatanuk/EventPassApp
+git clone https://github.com/hatanuk/EventPassApp
 ```
 ### Navigate to the project folder:
 ```bash
