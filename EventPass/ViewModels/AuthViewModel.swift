@@ -20,15 +20,15 @@ enum AuthenticationType {
 }
 
 enum SignUpError: Error {
-    case passwordMismatch, invalidEmail, shortPassword, weakPassword
+    case passwordMismatch, invalidEmail, shortPassword, weakPassword, emailInUse
 }
 
-
 class AuthViewModel: ObservableObject {
+    // handles authentication-related logic with Firebase Auth
     
     // minimum amount of characters for a valid password
     let MIN_PASS_LENGTH = 8
-    let defaultErrorMessage = "The operation was unsuccesful, please try again later"
+    let defaultErrorMessage = "The operation was unsuccessful, please try again later"
      
     @Published var email: String = ""
     @Published var password: String = ""
@@ -46,11 +46,9 @@ class AuthViewModel: ObservableObject {
 
 extension AuthViewModel {
     
-    
-    
-    // Validation
-    
+
     private func validateSignUp() throws {
+        // ensures details are within the required parameters
         
         let containsCapitalLetter = password.range(of: "[A-Z]", options: .regularExpression) != nil
         let containsNumber = password.range(of: "[0-9]", options: .regularExpression) != nil
@@ -69,14 +67,12 @@ extension AuthViewModel {
     
     private func signOutSafely() async {
         do {
-            try UserService.signOut()
-            await updateUser(to: nil)
+            try FirebaseService.signOut()
         } catch {
             print("ERROR SAFELY SIGNING OUT: \(error)")
         }
 
     }
-    
     
     
 // MARK: - Actions
@@ -103,11 +99,20 @@ extension AuthViewModel {
         }
     }
     
-    func getUserId() -> String? {
+    static func getUserId() -> String? {
         return Auth.auth().currentUser?.uid
     }
     
+    func getAlias() async -> String? {
+        if let id = AuthViewModel.getUserId() {
+            return try? await FirebaseService.retrieveAlias(fromID: id)
+        } else {
+            return nil
+        }
+    }
+    
     func signUpEmailPassword() async -> Bool {
+        // signing up
         
         let currentFirstName = firstName
         let currentLastName = lastName
@@ -128,16 +133,19 @@ extension AuthViewModel {
         }
         
         do {
-            // Validation
+            // validation
             try validateSignUp()
             
-            let authResult = try await UserService.signUp(email: email, password: password, user: user)
+            let authResult = try await FirebaseService.signUp(email: email, password: password, user: user)
             await updateUser(to: authResult.user)
-            try await saveNewUserDetails(userId: user.uid, firstName: currentFirstName, lastName: currentLastName)
+            try await saveNewUserDetails(userId: authResult.user.uid, firstName: currentFirstName, lastName: currentLastName)
+            try await FirebaseService.mapIDToEmail(userId: authResult.user.uid, email: email)
             print("SIGNUP FROM: \(authResult.user.uid)")
             return true
             
-        } catch SignUpError.invalidEmail {
+        }
+        
+        catch SignUpError.invalidEmail {
             await updateErrorMessage(to: "Invalid email address")
             return false
         } catch SignUpError.passwordMismatch {
@@ -149,6 +157,9 @@ extension AuthViewModel {
         } catch SignUpError.weakPassword {
             await updateErrorMessage(to: "Password must contain at least one capital letter and one number")
             return false
+        } catch SignUpError.emailInUse {
+            await updateErrorMessage(to: "Email is already in use, please try another one.")
+            return false
         } catch {
             await updateErrorMessage(to: defaultErrorMessage)
             print("SIGNUP ERROR: \(error)")
@@ -157,9 +168,20 @@ extension AuthViewModel {
     }
     
     func signInAnonymously() async -> Bool {
+        // this occurs for fresh users, providing them with an alias mapping and clearing previous UserDefault caches
+        
+        guard Auth.auth().currentUser == nil || Auth.auth().currentUser?.isAnonymous == false else {
+            await updateUser(to: Auth.auth().currentUser)
+        
+            print("Already signed in as anonymous user: \(Auth.auth().currentUser?.uid ?? "")")
+            return true
+          }
+        
+        CardViewModel.deleteLocalCard()
         
         do {
-            let authResult = try await UserService.signInAnonymously()
+            let authResult = try await FirebaseService.signInAnonymously()
+            try await FirebaseService.mapAliasToID(userID: authResult.user.uid)
             await updateUser(to: authResult.user)
             print("ANONYMOUS LOGIN FROM: \(authResult.user.uid)")
             return true
@@ -172,7 +194,7 @@ extension AuthViewModel {
     }
     
     func signInEmailPassword() async -> Bool {
-       
+        // logging in
         
         guard let user = user, user.isAnonymous else {
             await updateErrorMessage(to: "Already signed in!")
@@ -180,27 +202,27 @@ extension AuthViewModel {
         }
         
         do {
-            await signOutSafely()
-            let authResult = try await UserService.signIn(email: email, password: password)
+            let authResult = try await FirebaseService.signIn(email: email, password: password)
             await updateUser(to: authResult.user)
             print("LOGIN FROM: \(authResult.user.uid)")
             return true
             
-        } catch AuthErrorCode.invalidEmail {
-            await updateErrorMessage(to: "Please make sure the email was entered correctly")
-            return false
-        } catch AuthErrorCode.wrongPassword, AuthErrorCode.userNotFound{
-            await updateErrorMessage(to: "Incorrect user/password combination")
-            return false
-        } catch {
-            await updateErrorMessage(to: defaultErrorMessage)
-            print("LOGIN ERROR: \(error)")
+        } catch let error as NSError {
+            if error.code == AuthErrorCode.invalidCredential.rawValue {
+                await updateErrorMessage(to: "Incorrect user/password combination")
+            } else if error.code == AuthErrorCode.invalidEmail.rawValue ||  error.code == AuthErrorCode.missingEmail.rawValue{
+                await updateErrorMessage(to: "Please enter a valid email.")
+            } else {
+                await updateErrorMessage(to: "Unable to log in. Please try again later.")
+                print("Unexpected error: \(error.localizedDescription)")
+            }
             return false
         }
     }
     
     func signOut() async -> Bool {
         do {
+            clearAllUserDefaults()
             // Signs the user out and then generates them a new anonymous account
             await signOutSafely()
             if await signInAnonymously() {
@@ -217,7 +239,9 @@ extension AuthViewModel {
     
     func checkAuthenticationState() async {
         
-        if user != nil {
+        if Auth.auth().currentUser != nil {
+            print("already authenticaed")
+            await updateUser(to: Auth.auth().currentUser)
             await updateAuthenticationState(to: .authenticated)
         } else {
             await updateAuthenticationState(to: .authenticating)
@@ -228,12 +252,22 @@ extension AuthViewModel {
 
         }
     }
-    
+
     // MARK: Helper functions
     
+    private func clearAllUserDefaults() {
+        // clears all user defaults upon signout
+        if let domain = Bundle.main.bundleIdentifier {
+            UserDefaults.standard.removePersistentDomain(forName: domain)
+        }
+        UserDefaults.standard.synchronize()
+    }
+    
+    
     private func saveNewUserDetails(userId: String, firstName: String, lastName: String) async throws {
-        let newUser = CardProfile(id: userId, firstName: firstName, lastName: lastName)
-        try await UserService.saveUserDetails(fromCard: newUser)
+        let alias = try await FirebaseService.retrieveAlias(fromID: userId)
+        let newUser = CardModel(id: userId, alias: alias, firstName: firstName, lastName: lastName)
+        try await FirebaseService.save(card: newUser)
     }
 
 }
@@ -247,7 +281,6 @@ extension String {
 }
 
 // MARK: - Setters
-
 // Published variables must be altered on the main thread, and these wrappings facilitate that
 
 extension AuthViewModel {

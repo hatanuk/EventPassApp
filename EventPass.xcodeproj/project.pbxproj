@@ -10,12 +10,17 @@
 		5F2DC3742C56B3C40015EBE7 /* Freehand.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F2DC3732C56B2A20015EBE7 /* Freehand.ttf */; };
 		5F2DC3752C56B3C40015EBE7 /* Simple.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F2DC3722C56B29F0015EBE7 /* Simple.ttf */; };
 		5F2DC37B2C5928460015EBE7 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2DC37A2C5928460015EBE7 /* SignUpView.swift */; };
-		5F687DDA2C5D4EFF0010CDF6 /* RegularHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DD92C5D4EFF0010CDF6 /* RegularHubView.swift */; };
+		5F583A312CC784F6005A7EB4 /* EventCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F583A302CC784F6005A7EB4 /* EventCreationView.swift */; };
+		5F583A342CCA44AA005A7EB4 /* AttendeeHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F583A332CCA44AA005A7EB4 /* AttendeeHubView.swift */; };
+		5F583A362CCA44C8005A7EB4 /* OrganiserHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F583A352CCA44C8005A7EB4 /* OrganiserHubView.swift */; };
+		5F583A3B2CCC294B005A7EB4 /* EventOrganiserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F583A3A2CCC294B005A7EB4 /* EventOrganiserViewModel.swift */; };
+		5F583A472CCD3628005A7EB4 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F583A462CCD3628005A7EB4 /* UserModel.swift */; };
+		5F687DDA2C5D4EFF0010CDF6 /* HubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DD92C5D4EFF0010CDF6 /* HubView.swift */; };
 		5F687DDD2C5D4F790010CDF6 /* EventModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DDC2C5D4F790010CDF6 /* EventModel.swift */; };
-		5F687DE02C5D52C50010CDF6 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DDF2C5D52C50010CDF6 /* Event.swift */; };
+		5F687DE02C5D52C50010CDF6 /* EventCreationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DDF2C5D52C50010CDF6 /* EventCreationViewModel.swift */; };
 		5F687DE52C5E92080010CDF6 /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DE42C5E92080010CDF6 /* CardViewModel.swift */; };
-		5F687DE92C5E931E0010CDF6 /* CardProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DE82C5E931E0010CDF6 /* CardProfile.swift */; };
-		5F687DEB2C5E938F0010CDF6 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DEA2C5E938F0010CDF6 /* UserService.swift */; };
+		5F687DE92C5E931E0010CDF6 /* CardModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DE82C5E931E0010CDF6 /* CardModel.swift */; };
+		5F687DEB2C5E938F0010CDF6 /* FirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DEA2C5E938F0010CDF6 /* FirebaseService.swift */; };
 		5F687DED2C5F7E6A0010CDF6 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DEC2C5F7E6A0010CDF6 /* CardView.swift */; };
 		5F687DEF2C63DF870010CDF6 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DEE2C63DF870010CDF6 /* ProfileView.swift */; };
 		5F687DF12C6411F20010CDF6 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F687DF02C6411F20010CDF6 /* AuthViewModel.swift */; };
@@ -43,6 +48,10 @@
 		5FCB9D562C0DEAF9001172BD /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 5FCB9D552C0DEAF9001172BD /* FirebaseAuth */; };
 		5FCB9D582C0DEAF9001172BD /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 5FCB9D572C0DEAF9001172BD /* FirebaseCrashlytics */; };
 		5FCB9D5A2C0DEAF9001172BD /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 5FCB9D592C0DEAF9001172BD /* FirebaseFirestore */; };
+		5FE3DC872C85F3A00053417F /* EventHierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DC862C85F3A00053417F /* EventHierarchy.swift */; };
+		5FE3DC8D2C930F3D0053417F /* EventJoinViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DC8C2C930F3D0053417F /* EventJoinViewModel.swift */; };
+		5FE3DC8F2C9767470053417F /* EventConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DC8E2C9767470053417F /* EventConfig.swift */; };
+		5FE3DC912C9767F90053417F /* Attendee.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DC902C9767F90053417F /* Attendee.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,12 +76,17 @@
 		5F2DC3722C56B29F0015EBE7 /* Simple.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Simple.ttf; sourceTree = "<group>"; };
 		5F2DC3732C56B2A20015EBE7 /* Freehand.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Freehand.ttf; sourceTree = "<group>"; };
 		5F2DC37A2C5928460015EBE7 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
-		5F687DD92C5D4EFF0010CDF6 /* RegularHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularHubView.swift; sourceTree = "<group>"; };
+		5F583A302CC784F6005A7EB4 /* EventCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCreationView.swift; sourceTree = "<group>"; };
+		5F583A332CCA44AA005A7EB4 /* AttendeeHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendeeHubView.swift; sourceTree = "<group>"; };
+		5F583A352CCA44C8005A7EB4 /* OrganiserHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganiserHubView.swift; sourceTree = "<group>"; };
+		5F583A3A2CCC294B005A7EB4 /* EventOrganiserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventOrganiserViewModel.swift; sourceTree = "<group>"; };
+		5F583A462CCD3628005A7EB4 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		5F687DD92C5D4EFF0010CDF6 /* HubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubView.swift; sourceTree = "<group>"; };
 		5F687DDC2C5D4F790010CDF6 /* EventModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventModel.swift; sourceTree = "<group>"; };
-		5F687DDF2C5D52C50010CDF6 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		5F687DDF2C5D52C50010CDF6 /* EventCreationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCreationViewModel.swift; sourceTree = "<group>"; };
 		5F687DE42C5E92080010CDF6 /* CardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewModel.swift; sourceTree = "<group>"; };
-		5F687DE82C5E931E0010CDF6 /* CardProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardProfile.swift; sourceTree = "<group>"; };
-		5F687DEA2C5E938F0010CDF6 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
+		5F687DE82C5E931E0010CDF6 /* CardModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardModel.swift; sourceTree = "<group>"; };
+		5F687DEA2C5E938F0010CDF6 /* FirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseService.swift; sourceTree = "<group>"; };
 		5F687DEC2C5F7E6A0010CDF6 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		5F687DEE2C63DF870010CDF6 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		5F687DF02C6411F20010CDF6 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
@@ -95,6 +109,11 @@
 		5FCB9D3D2C0DE82C001172BD /* EventPassUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPassUITests.swift; sourceTree = "<group>"; };
 		5FCB9D3F2C0DE82C001172BD /* EventPassUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPassUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		5FCB9D4C2C0DE853001172BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../VM Horde/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		5FE3DC862C85F3A00053417F /* EventHierarchy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHierarchy.swift; sourceTree = "<group>"; };
+		5FE3DC8B2C8B080B0053417F /* EventCleanup.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = EventCleanup.js; sourceTree = "<group>"; };
+		5FE3DC8C2C930F3D0053417F /* EventJoinViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventJoinViewModel.swift; sourceTree = "<group>"; };
+		5FE3DC8E2C9767470053417F /* EventConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventConfig.swift; sourceTree = "<group>"; };
+		5FE3DC902C9767F90053417F /* Attendee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attendee.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,13 +163,52 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		5F583A372CCA44D0005A7EB4 /* HubViews */ = {
+			isa = PBXGroup;
+			children = (
+				5F583A352CCA44C8005A7EB4 /* OrganiserHubView.swift */,
+				5F687DD92C5D4EFF0010CDF6 /* HubView.swift */,
+				5F583A332CCA44AA005A7EB4 /* AttendeeHubView.swift */,
+			);
+			path = HubViews;
+			sourceTree = "<group>";
+		};
+		5F583A382CCC2929005A7EB4 /* Event ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				5F687DDF2C5D52C50010CDF6 /* EventCreationViewModel.swift */,
+				5FE3DC8C2C930F3D0053417F /* EventJoinViewModel.swift */,
+				5F583A3A2CCC294B005A7EB4 /* EventOrganiserViewModel.swift */,
+			);
+			path = "Event ViewModels";
+			sourceTree = "<group>";
+		};
+		5F583A3C2CCD2E33005A7EB4 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				5F687DEA2C5E938F0010CDF6 /* FirebaseService.swift */,
+			);
+			path = Database;
+			sourceTree = "<group>";
+		};
+		5F583A3E2CCD2E4E005A7EB4 /* Events */ = {
+			isa = PBXGroup;
+			children = (
+				5F687DE82C5E931E0010CDF6 /* CardModel.swift */,
+				5F687DDC2C5D4F790010CDF6 /* EventModel.swift */,
+				5FE3DC862C85F3A00053417F /* EventHierarchy.swift */,
+				5FE3DC902C9767F90053417F /* Attendee.swift */,
+				5FE3DC8E2C9767470053417F /* EventConfig.swift */,
+				5F583A462CCD3628005A7EB4 /* UserModel.swift */,
+			);
+			path = Events;
+			sourceTree = "<group>";
+		};
 		5F687DDB2C5D4F5A0010CDF6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				5F687DE82C5E931E0010CDF6 /* CardProfile.swift */,
-				5F687DEA2C5E938F0010CDF6 /* UserService.swift */,
-				5F687DDC2C5D4F790010CDF6 /* EventModel.swift */,
-				5FBEA2EF2C28856B00FA185D /* Bluetooth */,
+				5F583A3E2CCD2E4E005A7EB4 /* Events */,
+				5F583A3C2CCD2E33005A7EB4 /* Database */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -159,7 +217,7 @@
 			isa = PBXGroup;
 			children = (
 				5FBEA2EB2C287D8700FA185D /* BLEViewModel.swift */,
-				5F687DDF2C5D52C50010CDF6 /* Event.swift */,
+				5F583A382CCC2929005A7EB4 /* Event ViewModels */,
 				5F687DE42C5E92080010CDF6 /* CardViewModel.swift */,
 				5F687DF02C6411F20010CDF6 /* AuthViewModel.swift */,
 				5F687DF22C6430280010CDF6 /* NetworkViewModel.swift */,
@@ -173,21 +231,15 @@
 				5F687DEC2C5F7E6A0010CDF6 /* CardView.swift */,
 				5F687DEE2C63DF870010CDF6 /* ProfileView.swift */,
 				5FCB9D222C0DE82A001172BD /* WelcomeView.swift */,
+				5F583A302CC784F6005A7EB4 /* EventCreationView.swift */,
 				5F2DC37A2C5928460015EBE7 /* SignUpView.swift */,
 				5F82AD9B2C67BFEB00C6FF61 /* ViewExtensions.swift */,
 				5F82AD992C67BFCC00C6FF61 /* LogInView.swift */,
-				5F687DD92C5D4EFF0010CDF6 /* RegularHubView.swift */,
+				5F583A372CCA44D0005A7EB4 /* HubViews */,
 				5FBEA2F52C551F2E00FA185D /* SplashScreenView.swift */,
 				5F82AD9D2C6A1E9100C6FF61 /* CardCreationView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		5FBEA2EF2C28856B00FA185D /* Bluetooth */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Bluetooth;
 			sourceTree = "<group>";
 		};
 		5FBEA2F22C52450400FA185D /* Frameworks */ = {
@@ -201,6 +253,7 @@
 			isa = PBXGroup;
 			children = (
 				5FCB9D4C2C0DE853001172BD /* GoogleService-Info.plist */,
+				5FE3DC8A2C8B07E80053417F /* Firebase Cloud Functions */,
 				5FCB9D1F2C0DE82A001172BD /* EventPass */,
 				5FCB9D322C0DE82C001172BD /* EventPassTests */,
 				5FCB9D3C2C0DE82C001172BD /* EventPassUITests */,
@@ -260,6 +313,14 @@
 				5FCB9D3F2C0DE82C001172BD /* EventPassUITestsLaunchTests.swift */,
 			);
 			path = EventPassUITests;
+			sourceTree = "<group>";
+		};
+		5FE3DC8A2C8B07E80053417F /* Firebase Cloud Functions */ = {
+			isa = PBXGroup;
+			children = (
+				5FE3DC8B2C8B080B0053417F /* EventCleanup.js */,
+			);
+			path = "Firebase Cloud Functions";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -411,23 +472,32 @@
 			files = (
 				5F687DF32C6430280010CDF6 /* NetworkViewModel.swift in Sources */,
 				5FCB9D232C0DE82A001172BD /* WelcomeView.swift in Sources */,
-				5F687DE92C5E931E0010CDF6 /* CardProfile.swift in Sources */,
+				5F687DE92C5E931E0010CDF6 /* CardModel.swift in Sources */,
+				5FE3DC912C9767F90053417F /* Attendee.swift in Sources */,
+				5FE3DC8F2C9767470053417F /* EventConfig.swift in Sources */,
 				5F82AD9E2C6A1E9100C6FF61 /* CardCreationView.swift in Sources */,
 				5F687DED2C5F7E6A0010CDF6 /* CardView.swift in Sources */,
 				5FCB9D252C0DE82A001172BD /* Item.swift in Sources */,
-				5F687DDA2C5D4EFF0010CDF6 /* RegularHubView.swift in Sources */,
+				5FE3DC872C85F3A00053417F /* EventHierarchy.swift in Sources */,
+				5F687DDA2C5D4EFF0010CDF6 /* HubView.swift in Sources */,
 				5F82AD9A2C67BFCC00C6FF61 /* LogInView.swift in Sources */,
 				5FBEA2EC2C287D8700FA185D /* BLEViewModel.swift in Sources */,
+				5F583A3B2CCC294B005A7EB4 /* EventOrganiserViewModel.swift in Sources */,
 				5FCB9D212C0DE82A001172BD /* EventPassApp.swift in Sources */,
 				5FBEA2F12C28857F00FA185D /* Constants.swift in Sources */,
 				5F687DE52C5E92080010CDF6 /* CardViewModel.swift in Sources */,
 				5F2DC37B2C5928460015EBE7 /* SignUpView.swift in Sources */,
-				5F687DEB2C5E938F0010CDF6 /* UserService.swift in Sources */,
+				5F687DEB2C5E938F0010CDF6 /* FirebaseService.swift in Sources */,
 				5F687DDD2C5D4F790010CDF6 /* EventModel.swift in Sources */,
+				5F583A472CCD3628005A7EB4 /* UserModel.swift in Sources */,
 				5F687DF12C6411F20010CDF6 /* AuthViewModel.swift in Sources */,
+				5F583A312CC784F6005A7EB4 /* EventCreationView.swift in Sources */,
+				5F583A362CCA44C8005A7EB4 /* OrganiserHubView.swift in Sources */,
 				5FBEA2F62C551F2E00FA185D /* SplashScreenView.swift in Sources */,
-				5F687DE02C5D52C50010CDF6 /* Event.swift in Sources */,
+				5FE3DC8D2C930F3D0053417F /* EventJoinViewModel.swift in Sources */,
+				5F687DE02C5D52C50010CDF6 /* EventCreationViewModel.swift in Sources */,
 				5F82AD9C2C67BFEB00C6FF61 /* ViewExtensions.swift in Sources */,
+				5F583A342CCA44AA005A7EB4 /* AttendeeHubView.swift in Sources */,
 				5F687DEF2C63DF870010CDF6 /* ProfileView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

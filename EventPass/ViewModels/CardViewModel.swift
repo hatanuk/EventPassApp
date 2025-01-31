@@ -12,15 +12,15 @@ import Firebase
 import PhoneNumberKit
 
 class CardViewModel: ObservableObject {
+    // handles logic relating to the creation and retrieval of user cards
         
     @Published var errorMessage = ""
     
     // observers are used to update the card instance with the changed details
     
-    // ID can be an empty string, but in practice, it should be set immediately by the view or the operation should be cancelled
-    @Published var id: String = "" {
-        didSet { updateCard() }
-    }
+    var id: String
+    var alias: String
+    
     @Published var displayName: String = "" {
         didSet { updateCard() }
     }
@@ -43,13 +43,19 @@ class CardViewModel: ObservableObject {
         didSet { updateCard() }
     }
     
-    @Published var card: CardProfile = CardProfile(id: "nil")
+    @Published var card: CardModel = CardModel(id: "nil", alias: "nil")
     
     @Published var selectedPhoto: UIImage? = nil
     
+    init(id: String, alias: String) {
+        self.id = id
+        self.alias = alias
+    }
+    
     private func updateCard() {
-        card = CardProfile(
+        card = CardModel(
             id: id,
+            alias: alias,
             displayName: displayName.isEmpty ? nil : displayName,
             title: title.isEmpty ? nil : title,
             workplace: workplace.isEmpty ? nil : workplace,
@@ -81,12 +87,14 @@ class CardViewModel: ObservableObject {
             return true
         }
     }
- 
-    // MARK: Firebase Operations
+    
+    //MARK: - Mixed DB Operations
     
     func save() async -> Bool {
-            
-        let card = CardProfile(id: id,
+        // saves the card both locally and on Firestore
+        
+        let card = CardModel(id: id,
+                             alias: alias,
                                displayName: displayName,
                                title: title,
                                workplace: workplace,
@@ -94,8 +102,13 @@ class CardViewModel: ObservableObject {
                                phone: phone,
                                profilePictureURL: profilePictureURL,
                                theme: theme)
+        
+        // save locally
+        saveLocalCard()
+        
+        // save on firebase
         do {
-            try await UserService.saveUserDetails(fromCard: card)
+            try await FirebaseService.save(card: card)
             return true
         } catch {
             return await MainActor.run {
@@ -107,44 +120,73 @@ class CardViewModel: ObservableObject {
         
     }
     
-    func load() async -> Bool {
-        
-        
+    func load() async {
+        // loads the card from either UserDefaults or Firestore
         
         guard id != "" else {
             await MainActor.run {
                 errorMessage = "User not authenticated"
             }
-            return false
+            return
+        }
+        
+        let card = await CardViewModel.retrieveCardIfExists(userID: id)
+            // this updates the viewmodel with the card info
+            if let card = card {
+                await MainActor.run {
+                    self.id = card.id
+                    self.alias = card.alias
+                    self.displayName = card.displayName ?? ""
+                    self.title = card.title ?? ""
+                    self.workplace = card.workplace ?? ""
+                    self.email = card.email ?? ""
+                    self.phone = card.phone ?? ""
+                    self.profilePictureURL = card.profilePictureURL ?? ""
+                    self.theme = card.theme
+                    self.card = card
+                }
+            }
         }
     
-        do {
-            let card = try await CardProfile(fromUserId: id)
-            await MainActor.run {
-                self.id = card.id
-                self.displayName = card.displayName ?? ""
-                self.title = card.title ?? ""
-                self.workplace = card.workplace ?? ""
-                self.email = card.email ?? ""
-                self.phone = card.phone ?? ""
-                self.profilePictureURL = card.profilePictureURL ?? ""
-                self.theme = card.theme
-                self.card = card
-            }
-            return true
-        } catch FirestoreErrorCode.notFound {
-            // user does not yet have a saved card, no worries
-            return false
-        } catch {
-            print(error)
-            await MainActor.run {
-                errorMessage = error.localizedDescription
-            }
-            return false
-        }
-        
+    
+    
+    //MARK: - Local DB Operations
+    
+    func saveLocalCard() {
+        let defaults = UserDefaults.standard
+           if let encodedData = try? JSONEncoder().encode(card) {
+               defaults.set(encodedData, forKey: "savedCard")
+           }
     }
+    
+    static func deleteLocalCard() {
+        UserDefaults.standard.removeObject(forKey: "savedCard")
+    }
+    
+    static func retrieveLocalCard() -> CardModel? {
+        let defaults = UserDefaults.standard
+        if let savedData = defaults.data(forKey: "savedCard"),
+           let decodedObject = try? JSONDecoder().decode(CardModel.self, from: savedData) {
+            return decodedObject
+        }
+        return nil
+    }
+    
+    static func retrieveCardIfExists(userID: String) async -> CardModel? {
         
+        // first, try fetching the card locally
+        if let card = CardViewModel.retrieveLocalCard() {
+            return card
+        }
+        // otherwise fetch it from firebase
+        do {
+            return try await CardModel(fromUserId: userID)
+        } catch {
+            return nil
+        }
+                
+    }
+  
 }
 
 

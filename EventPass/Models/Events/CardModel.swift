@@ -11,10 +11,12 @@ import FirebaseFirestore
 
 
 
-struct CardProfile {
+struct CardModel: Identifiable, Hashable, Codable {
+    // represents the user's provided details, needed to construct a card
     
-    // Mandatory properties
+    // Non-optional properties
     let id: String
+    let alias: String
     
     // Optional properties
     var firstName: String? = ""
@@ -29,29 +31,26 @@ struct CardProfile {
     
     init(fromUserId userId: String) async throws {
         self.id = userId
+        self.alias = try await FirebaseService.retrieveAlias(fromID: self.id)
+        let queryResult = try await FirebaseService.retrieveDetails(fromUserId: userId)
+        firstName = nilIfEmpty(queryResult["firstName"] ?? nil)
+        lastName = nilIfEmpty(queryResult["lastName"] ?? nil)
+        displayName = nilIfEmpty(queryResult["displayName"] ?? nil)
+        title = nilIfEmpty(queryResult["title"] ?? nil)
+        workplace = nilIfEmpty(queryResult["workplace"] ?? nil)
+        email = nilIfEmpty(queryResult["email"] ?? nil)
+        phone = nilIfEmpty(queryResult["phone"] ?? nil)
+        profilePictureURL = nilIfEmpty(queryResult["profilePictureURL"] ?? nil) ?? Constants.defaultProfileImageURL
         
-        do {
-            let queryResult = try await UserService.fetchUserDetails(userId: userId)
-            firstName = nilIfEmpty(queryResult["firstName"] ?? nil)
-            lastName = nilIfEmpty(queryResult["lastName"] ?? nil)
-            displayName = nilIfEmpty(queryResult["displayName"] ?? nil)
-            title = nilIfEmpty(queryResult["title"] ?? nil)
-            workplace = nilIfEmpty(queryResult["workplace"] ?? nil)
-            email = nilIfEmpty(queryResult["email"] ?? nil)
-            phone = nilIfEmpty(queryResult["phone"] ?? nil)
-            profilePictureURL = nilIfEmpty(queryResult["profilePictureURL"] ?? nil) ?? Constants.defaultProfileImageURL
-            
-            if let themeResult = queryResult["theme"], let themeString = themeResult {
-                theme = ColorThemes(id: Int(themeString) ?? 0)
-            }
-            
-        } catch {
-            throw error
+        if let themeResult = queryResult["theme"], let themeString = themeResult {
+            print("THEME STRING: \(themeString)")
+            theme = ColorThemes(id: Int(themeString) ?? 0)
         }
         
     }
     
     init(id: String,
+         alias: String,
              firstName: String? = nil,
              lastName: String? = nil,
              displayName: String? = nil,
@@ -62,6 +61,7 @@ struct CardProfile {
              profilePictureURL: String? = nil,
              theme: ColorThemes = Constants.defaultColorTheme) {
             self.id = id
+        self.alias = alias
             self.firstName = firstName
             self.lastName = lastName
             self.displayName = displayName

@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import CoreBluetooth
 
 struct ProfileView: View {
-    var profile: CardProfile
+    // reduced form of a CardView which displays basic information that is transmitted over BLE
+    
+    var user: UserModel
     
     var profileBorderColors: [Color] = [.red, .green, .blue, .pink, .purple, .cyan, .orange, .yellow, .mint, .teal, .brown]
     
@@ -22,13 +25,10 @@ struct ProfileView: View {
     
     
     var body: some View {
-            GeometryReader { geometry in
-                let cardWidth = geometry.size.width * 0.9
-                let cardHeight = cardWidth / 1.7
                 
                 VStack {
                     HStack {
-                        let url = URL(string: profile.profilePictureURL ?? Constants.defaultProfileImageURL)
+                        let url = URL(string: user.profilePictureURL ?? Constants.defaultProfileImageURL)
                             AsyncImage(url: url) { image in
                                 image
                                     .resizable()
@@ -41,39 +41,39 @@ struct ProfileView: View {
                             }.overlay {
                                 Circle().stroke(profileBorderColors.randomElement() ?? .red, lineWidth: 3)
                             }
-                
-                        
+                           
                         VStack(alignment: .leading) {
-                            if let displayName = profile.displayName {
+                            if let displayName = user.displayName {
                                 Text(displayName)
                                     .font(.title2)
                                     .fontWeight(.bold)
                                     .foregroundColor(textColor)
                                   
-          
                
                             }
                             
-                            if let title = profile.title {
+                            if let title = user.title {
                                 Text(title)
                                     .font(.subheadline)
                                     .foregroundColor(textColor)
                                
                             }
                             
-                            if let workplace = profile.workplace {
+                            if let workplace = user.workplace {
                                 Text(workplace)
                                     .font(.subheadline)
                                     .foregroundColor(textColor)
                                
                             }
+                      
                         }
                         .lineLimit(1)
                         .padding(.leading, 10)
                         
-                        Spacer()
+             
                     }
                     .padding([.top, .horizontal])
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     
                     Divider()
                  
@@ -83,12 +83,12 @@ struct ProfileView: View {
                 .cornerRadius(10)
                 .shadow(radius: 10)
                 .padding()
-                .frame(width: cardWidth, height: cardHeight)
+                .frame(width: 400, height: 130)
             }
   
-        }
     }
 
+
 #Preview {
-    ProfileView(profile: Constants.testProfile)
+    ProfileView(user: UserModel(fromCard: Constants.testProfile))
 }

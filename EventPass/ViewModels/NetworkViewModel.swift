@@ -15,6 +15,7 @@ enum ConnectionState {
 }
 
 class NetworkViewModel: ObservableObject {
+    // handles the internet connection state
     
     @Published var connectionState: ConnectionState = .connecting
     

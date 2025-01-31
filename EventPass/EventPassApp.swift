@@ -13,7 +13,7 @@ import FirebaseCore
 
 
 // Firebase Boilerplate
-// An AppDelegate is responsible for handling respondng to app-level events such as
+// An AppDelegate is responsible for handling response to app-level events such as
 // launching or termination
 // This code configures Firebase upon a completed launch
 class AppDelegate: NSObject, UIApplicationDelegate {

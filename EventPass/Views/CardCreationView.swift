@@ -9,11 +9,14 @@ import SwiftUI
 import _PhotosUI_SwiftUI
 
 struct CardCreationView: View {
+    // view for card customization and saving
     
     @EnvironmentObject var authViewModel: AuthViewModel
-    @StateObject var viewModel = CardViewModel()
+    @StateObject var viewModel = CardViewModel(id: "", alias: "")
     @FocusState private var focusedField: FocusedField?
     @Environment(\.presentationMode) var presentationMode
+    
+    
     
     var fullName: String {
         if let firstName = viewModel.card.firstName, let lastName = viewModel.card.lastName {
@@ -73,12 +76,12 @@ struct CardCreationView: View {
     private func cardEditFields() -> some View {
         Form {
             
-            formSection(header: "Specify name on card:", binding: $viewModel.displayName, maxChar: 50)
+            formSection(header: "Specify name on card:", binding: $viewModel.displayName, maxChar: 45)
                 .focused($focusedField, equals: .displayName)
-            formSection(header: "Specify a title:", binding: $viewModel.title, maxChar: 50)
+            formSection(header: "Specify a title:", binding: $viewModel.title, maxChar: 30)
                 .focused($focusedField, equals: .title)
 
-            formSection(header: "Specify a workplace:", binding: $viewModel.workplace, maxChar: 50)
+            formSection(header: "Specify a workplace:", binding: $viewModel.workplace, maxChar: 30)
                 .focused($focusedField, equals: .workplace)
 
             formSection(header: "Specify a public email:", binding: $viewModel.email, maxChar: 50, keyboardType: .emailAddress)
@@ -137,15 +140,23 @@ struct CardCreationView: View {
     // MARK: - Helper Methods
     
     private func handleOnAppear() {
-        let id = authViewModel.getUserId()
-        if let id = id {
-            viewModel.id = id
-        } else {
-            // user account is not found, must be an error
-            presentationMode.wrappedValue.dismiss()
-        }
+        
         Task {
+            let id = AuthViewModel.getUserId()
+            print(id)
+            let alias = await authViewModel.getAlias()
+            print(alias)
+            if let id = id, let alias = alias {
+                viewModel.alias = alias
+                viewModel.id = id
+            } else {
+                // user account is not found, must be an error
+                print("No account found")
+                presentationMode.wrappedValue.dismiss()
+            }
+          
             await viewModel.load()
+            
         }
         
     }

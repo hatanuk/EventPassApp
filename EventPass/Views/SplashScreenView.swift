@@ -9,22 +9,24 @@ import SwiftUI
 import Firebase
 
 struct SplashScreenView: View {
+    // the first view upon launching the app
+    // contains many initialisation processes, including internet connection, authentication, and event retrieval (in that order)
     
     @EnvironmentObject var authViewModel: AuthViewModel
     @StateObject var networkViewModel: NetworkViewModel = NetworkViewModel()
-
+    @StateObject var eventViewModel: EventJoinViewModel = EventJoinViewModel(event: nil, eventCode: nil)
     @State private var isShown = true
-
+    
     // visual animation related variables
     @State private var opacity = 0.5
     @State private var size = 0.8
-    
-    private let minimumWait = 2.0
+    private let minimumWait = 1.0
     private let animationTime = 1.2
+    
 
     var body: some View {
         if !isShown {
-            WelcomeView()
+            WelcomeView(eventViewModel: eventViewModel)
         } else {
             VStack {
                 Image("Logo")
@@ -52,15 +54,28 @@ struct SplashScreenView: View {
             .onChange(of: networkViewModel.connectionState) { _, newValue in
                 if newValue == .connected {
                     Task {
-                        await authViewModel.checkAuthenticationState()
+                        try? await Task.sleep(nanoseconds: 1_000_000_000 * UInt64(minimumWait))
+                            await authViewModel.checkAuthenticationState()
+                          
+                    
                     }
                 }
             }
             
             .onChange(of: authViewModel.authenticationState) {_, newValue in
-                
                 if newValue == .authenticated {
-                    withAnimation(.easeIn(duration: animationTime)){
+                    Task {
+                        // attempt to fetch the user's card before joining an event
+                        if let id = AuthViewModel.getUserId(), let card = await CardViewModel.retrieveCardIfExists(userID: id) {
+                            eventViewModel.userCard = card
+                        }
+                        await eventViewModel.retrieveLocalStoredEvent()
+                    }
+                }
+            }
+            .onChange(of: eventViewModel.eventState) { _, newValue in
+                if newValue == .joinedAndRetrieved || newValue == .notJoined {
+                    withAnimation(.easeIn(duration: animationTime)) {
                         isShown = false
                     }
                 }
@@ -73,8 +88,10 @@ struct SplashScreenView: View {
         if networkViewModel.connectionState == .connecting {
             Text("Connecting...")
         }
-        else if authViewModel.authenticationState == .authenticating {
+        else if authViewModel.authenticationState == .authenticating || authViewModel.authenticationState == .unauthenticated {
             Text("Authenticating....")
+        } else if eventViewModel.eventState == .joinedAndRetrieving {
+            Text("Retrieving Event...")
         } else {
             Text("Success!")
         }

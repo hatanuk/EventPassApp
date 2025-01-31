@@ -8,12 +8,10 @@
 import SwiftUI
 
 struct LogInView: View {
+    // facilitates logging in capabilities with Firebase Auth
     
     @EnvironmentObject var viewModel: AuthViewModel
-    
     @FocusState private var focusedField: FocusedField?
-    
-    @State private var showForgotPassword = false
     @State private var errorShown = false
     
     private var canConfirm: Bool {
@@ -35,6 +33,7 @@ struct LogInView: View {
        
         NavigationStack {
             VStack {
+                Spacer()
                 InputElement("Email", binding: $viewModel.email, maxChar: 50, keyboardType: .emailAddress)
                     .focused($focusedField, equals: .email)
                 InputElement("Password", binding: $viewModel.password, maxChar: 100, secure: true)
@@ -42,8 +41,7 @@ struct LogInView: View {
                     .padding(.bottom, -30)
                 ConfirmButtonView
                     .padding(.vertical, 40)
-                ForgotPasswordButton
-                    .scaleEffect(1.2)
+                Spacer()
             }
             .padding()
             .alert(viewModel.errorMessage, isPresented: $errorShown) {
@@ -71,9 +69,6 @@ struct LogInView: View {
             ToolbarItem(placement: .navigationBarTrailing) {ToolbarCancelView(presentationMode)}
            
         }
-        .sheet(isPresented: $showForgotPassword) {
-            ForgotPasswordView
-        }
         .onSubmit {
             switch focusedField {
             case .email:
@@ -85,30 +80,19 @@ struct LogInView: View {
         }
         
     }
-    
-    var ForgotPasswordButton: some View {
-        Button(action: {
-            showForgotPassword.toggle()
-            }
-        ) {
-            Text("Forgot password?")
-        }
-    }
-    
-    var ForgotPasswordView: some View {
-        Text("Sorry about that.")
-    }
      
     var ConfirmButtonView: some View {
         
         Button {
-            var success: Bool = false
+            var success = false
+            
             Task {
                 success = await viewModel.signInEmailPassword()
+                if success {
+                    presentationMode.wrappedValue.dismiss()
+                }
             }
-            if success {
-                presentationMode.wrappedValue.dismiss()
-            }
+           
         } label : {
             Text("Confirm")
             .frame(width:150, height:60)
@@ -126,7 +110,8 @@ struct LogInView: View {
         .disabled(!canConfirm)
 
     }
-        
+    
+   
 }
 
 

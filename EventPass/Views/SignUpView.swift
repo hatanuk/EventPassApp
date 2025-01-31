@@ -10,12 +10,10 @@ import SwiftUI
 
 
 struct SignUpView: View {
-    
+    // facilitates signing up capabilities with Firebase Auth
     
     @EnvironmentObject var viewModel: AuthViewModel
-    
     @FocusState private var focusedField: FocusedField?
-    
     @State private var showTerms = false
     @State private var errorShown = false
     
@@ -127,7 +125,7 @@ struct SignUpView: View {
                 .font(.largeTitle)
                 .padding()
             
-            Text("You agree to enter a soul contract with this company.")
+            Text("Terms of service will be included here.")
                 .padding()
             
             Spacer()

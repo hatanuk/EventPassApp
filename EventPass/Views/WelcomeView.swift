@@ -9,53 +9,100 @@ import SwiftUI
 import SwiftData
 
 struct WelcomeView: View {
-    @EnvironmentObject private var viewModel: AuthViewModel
+    // serves as the main hub for event joining, creation, account management and card creation
+    
+    @EnvironmentObject private var authViewModel: AuthViewModel
+    @ObservedObject var eventViewModel: EventJoinViewModel
     
     @State private var eventCode = ""
     @State private var showHelp = false
-    
+    @State private var showProgressView = false
+    @State private var storedValue: String = ""
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                FlavorTextView
-                Spacer()
-                EventInputView
-                EventCreatorView
-                Spacer()
-                AccountInfoView
-                    .scaleEffect(1.2)
-                    .padding(.horizontal, 35)
-                    .padding(.bottom, 20)
-                    .fontWeight(.semibold)
+        NavigationStack(path: $eventViewModel.navigationPath) {
+            WelcomeViewInterface
+        }
+        .navigationBarBackButtonHidden(true)
+        
+        
+    }
+    
+    var WelcomeViewInterface: some View {
+        VStack {
+            FlavorTextView
+            EventInputView
+            EventCreatorView
+            AccountInfoView
+            if showProgressView {
+                ProgressView()
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding()
-            .navigationBarItems(trailing: HelpIconView)
-            .navigationBarItems(leading: CardIconView)
-            .sheet(isPresented: $showHelp) {
-                HelpView
+            
+        }
+        .navigationBarItems(
+            leading: CardIconView,
+            trailing: HelpIconView
+        )
+        .sheet(isPresented: $showHelp) {
+            HelpView
+        }
+        // code relating to the automatic joining of events
+        .navigationDestination(for: EventModel.self) { event in
+            
+            if let card = eventViewModel.userCard {
+                HubView(BLEViewModel: BLEViewModel(userCard: card), eventViewModel: eventViewModel)
+                    .id(event)
+            } else {
+                EmptyView().onAppear {
+                    eventViewModel.removeEvent()
+                }
             }
+        }
+        .onAppear {
+            if let event = eventViewModel.event {
+                print("current event: \(event.title)")
+            }
+            
         }
         .navigationBarBackButtonHidden(true)
     }
     
+    
+    
+    
     var EventCreatorView: some View {
-        if let user = viewModel.user, !user.isAnonymous {
-            return AnyView(HStack {
-                Text("Or")
-                NavigationLink("create your own") {
-                    SignUpView()
+        Group {
+            if let user = authViewModel.user, !user.isAnonymous {
+                HStack {
+                    Text("Or")
+                    
+                    NavigationLink(
+                        destination: {
+                            if eventViewModel.userCard != nil {
+                                EventCreationView(userID: user.uid, eventJoinViewModel: eventViewModel)
+                            }
+                        },
+                        label: {
+                            Text("create your own")
+                        }
+                    )
+                    .simultaneousGesture(TapGesture().onEnded {
+                        // ensures the user has a card prepared, required to navigate to event later
+                        Task {
+                            await eventViewModel.prepareCard()
+                        }
+                    })
                 }
+                .padding(.vertical, -40)
+                .font(.headline)
+            } else {
+                EmptyView()
             }
-            .padding(.vertical, -40)
-            .font(.headline)
-                           )
-        } else {
-            return AnyView(EmptyView())
         }
         
+        
     }
+    
     
     var HelpIconView: some View {
         Button(action: {
@@ -77,7 +124,6 @@ struct WelcomeView: View {
         .padding()
     }
     
-    
     var FlavorTextView: some View {
         VStack(spacing: 20) {
             Text("Welcome.")
@@ -86,9 +132,8 @@ struct WelcomeView: View {
             
             Text("Looking to join an event?")
                 .font(.system(size: 30))
-            
         }
-        .padding(.top, 40)
+        .padding(.top, 50)
     }
     
     var NoLoginOptions: some View {
@@ -115,29 +160,36 @@ struct WelcomeView: View {
     
     var LoggedInOptions: some View {
         VStack {
-            Text("Logged in as: \(viewModel.user?.email ?? "")")
-                .foregroundColor(.gray)
-                .padding(.bottom, 3)
+            if let email = authViewModel.user?.email {
+                Text("Logged in as: \(email)")
+                    .foregroundColor(.gray)
+                    .padding(.bottom, 3)
+            }
             Button("Log out") {
-                Task {
-                    await viewModel.signOut()
+                withProgressView {
+                    await authViewModel.signOut()
                 }
             }
         }
     }
-
     
     var AccountInfoView: some View {
-        if let user = viewModel.user {
-            if user.isAnonymous {
-                return AnyView(NoLoginOptions)
+        Group {
+            if let user = authViewModel.user, !user.isAnonymous {
+                LoggedInOptions
             } else {
-                return AnyView(LoggedInOptions)
+                NoLoginOptions
             }
+            
         }
-        return AnyView(NoLoginOptions)
-        
+        .scaleEffect(1.2)
+        .padding(.horizontal, 35)
+        .padding(.bottom, 0)
+        .fontWeight(.semibold)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
     }
+    
     
     var HelpView: some View {
         VStack {
@@ -158,7 +210,6 @@ struct WelcomeView: View {
     }
     
     var EventInputView: some View {
-        
         VStack {
             TextField("", text: $eventCode)
                 .multilineTextAlignment(.center)
@@ -173,15 +224,18 @@ struct WelcomeView: View {
                 )
                 .keyboardType(.numberPad)
                 .onChange(of: eventCode) { oldValue, newValue in
-                    // filters through every character in the string to check that it is a numeral
-                    var filtrate = newValue.filter {"0123456789".contains($0)}
+                    var filtrate = newValue.filter { "0123456789".contains($0) }
                     
-                    if filtrate.count > 6 {
-                        filtrate = String(filtrate.prefix(6))
+                    if filtrate.count > EventModel.EVENT_CODE_LENGTH {
+                        filtrate = String(filtrate.prefix(EventModel.EVENT_CODE_LENGTH))
                     }
                     
                     eventCode = filtrate
-                    
+                }
+                .onSubmit {
+                    withProgressView {
+                        await onSubmit()
+                    }
                 }
             
             Text("Enter the event code above")
@@ -189,20 +243,43 @@ struct WelcomeView: View {
                 .font(.caption)
                 .scaleEffect(1.5)
                 .padding(.top, 10)
+            
         }
         .padding(.horizontal)
         .padding(.bottom, 50)
+        .alert(isPresented: $eventViewModel.showEventAlert) {
+            print("alert message: \(eventViewModel.eventAlertMessage)")
+            return Alert(
+                title: Text("Error"),
+                message: Text(eventViewModel.eventAlertMessage),
+                dismissButton: .default(Text("OK"))
+            )
+        }
     }
     
-}
+    func onSubmit() async {
+        await eventViewModel.attemptJoinEvent(code: eventCode)
+    }
+
+            
+        
     
+    // helper functions
+    private func withProgressView(task: @escaping () async -> Void) {
+        showProgressView.toggle()
+        Task {
+            await task()
+            showProgressView.toggle()
+        }
+    }
+    
+    }
+    
+   
 
 
-    
-    
 #Preview {
-    WelcomeView()
+    WelcomeView(eventViewModel: EventJoinViewModel(event: nil, eventCode: nil))
         .modelContainer(for: Item.self, inMemory: true)
         .environmentObject(AuthViewModel())
-    
 }

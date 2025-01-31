@@ -9,10 +9,13 @@ import SwiftUI
 import PhoneNumberKit
 
 
-enum ColorThemes: String, CaseIterable {
+enum ColorThemes: String, CaseIterable, Codable {
+    // represents the colors available for card customization
+    
     case midnight
     case sunset
     case coolBlue
+    case silverEdge
     
     init(id: Int) {
             switch id {
@@ -22,6 +25,8 @@ enum ColorThemes: String, CaseIterable {
                 self = .sunset
             case 2:
                 self = .midnight
+            case 3:
+                self = .silverEdge
             default:
                 self = Constants.defaultColorTheme
             }
@@ -35,6 +40,9 @@ enum ColorThemes: String, CaseIterable {
             return [.black, .blue]
         case .sunset:
             return [.red, .orange]
+            
+        case .silverEdge:
+            return [.white, .gray]
         }
     }
     
@@ -42,7 +50,10 @@ enum ColorThemes: String, CaseIterable {
         switch self {
         case .coolBlue, .midnight, .sunset:
             return .white
+        case .silverEdge:
+            return .black
         }
+        
     }
     
     var id: Int {
@@ -53,14 +64,18 @@ enum ColorThemes: String, CaseIterable {
                 return 1
             case .midnight:
                 return 2
+            case .silverEdge:
+                return 3
+            
             }
         }
 }
 
 
 struct CardView: View {
-    var card: CardProfile
-
+    // displays a user's details in a card-like format
+    
+    var card: CardModel
     
     var body: some View {
       
